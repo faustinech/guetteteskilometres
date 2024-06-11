@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Guette tes kilomètres</string>
+    <string name="text_nb_participants">%s participants</string>
+    <string name="text_nb_kilometres">%s kms</string>
+    <string name="title_home">Accueil</string>
+    <string name="label_no_event">Il n\'y a pas d\'évément pour l\'instant. Veuillez en ajouter un.</string>
+
+    <string name="title_new_event">Créer événement</string>
+    <string name="label_name_event">Nom de l\'événement</string>
+    <string name="message_error_name_event">Veuillez saisir un nom valide</string>
+
+    <string name="title_participations">Participations</string>
+    <string name="title_new_participation">Nouvelle participation</string>
+    <string name="title_new_person">Nouveau participant</string>
+
+    <string name="message_valeur_incorrect">Valeur incorrecte</string>
+    <string name="message_error_missing_person">Veuillez choisir un participant</string>
+    <string name="message_error_missing_start_meters">Veuillez saisir les mètres de départ</string>
+    <string name="message_error_firstname_missing">Le prénom est manquant</string>
+
+    <string name="label_name_person">Participant</string>
+    <string name="label_start_kilometres">Début (mètres)</string>
+    <string name="label_end_kilometres">Fin (mètres)</string>
+    <string name="text_nb_metres">%s m</string>
+    <string name="label_nb_kilometres_totaux">Total - %s kms</string>
+    <string name="label_no_participation">Il n\'y a pas de participations pour l\'événement : %s</string>
+    <string name="label_filter">Filtrer</string>
+
+    <string name="label_firstname">Prénom</string>
+    <string name="label_name">Nom</string>
+
+    <string name="common_yes">Oui</string>
+    <string name="common_no">Non</string>
+    <string name="message_confirmation_cloture">Confirmez-vous la clôture de cet événement ?</string>
+    <string name="title_confirmation">Confirmation</string>
+</resources>
