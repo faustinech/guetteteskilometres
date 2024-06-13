@@ -1,24 +1,19 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.guetteteskilometres.constants.GTKArguments
-import com.example.guetteteskilometres.constants.GTKRoutes
+import androidx.navigation.toRoute
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
+import com.example.guetteteskilometres.ui.navigation.Participations
 
 fun NavGraphBuilder.participations(
     navigations: ParticipationsNavigations,
     eventRepository: EventRepository,
     participationRepository: ParticipationRepository
 ) {
-    composable(
-        GTKRoutes.participations,
-        arguments = listOf(navArgument(GTKArguments.idEvent) { type = NavType.LongType })
-    ) { backStackEntry ->
-        val idEvent = backStackEntry.arguments?.getLong(GTKArguments.idEvent)
+    composable<Participations> { backStackEntry ->
+        val arguments: Participations = backStackEntry.toRoute()
         val viewModel = ParticipationsViewModel(
             eventRepository = eventRepository,
             participationRepository = participationRepository
@@ -26,7 +21,7 @@ fun NavGraphBuilder.participations(
         ParticipationsScreen(
             navigations = navigations,
             viewModel = viewModel,
-            idEvent = idEvent
+            idEvent = arguments.idEvent
         )
     }
 }

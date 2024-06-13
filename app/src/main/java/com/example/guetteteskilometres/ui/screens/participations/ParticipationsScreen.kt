@@ -53,7 +53,7 @@ import kotlin.math.abs
 fun ParticipationsScreen(
     navigations: ParticipationsNavigations,
     viewModel: ParticipationsViewModel,
-    idEvent: Long?
+    idEvent: Long
 ) {
     val state = viewModel.state.collectAsState().value
     viewModel.initialize(idEvent)
@@ -61,7 +61,7 @@ fun ParticipationsScreen(
         state = state,
         interactions = ParticipationsInteractions(
             onBackClicked = { navigations.navigateUp() },
-            onCreationParticipationClicked = { navigations.navigateToNewParticipation(idEvent) },
+            onCreationParticipationClicked = { navigations.navigateToParticipation(idEvent, null) },
             onParticipationClicked = { idParticipation -> navigations.navigateToParticipation(idEvent, idParticipation) },
             onClotureEventClicked = viewModel::closeEvent,
             onFilterChanged = viewModel::updateFilter,

@@ -1,14 +1,12 @@
 package com.example.guetteteskilometres.ui.screens.newparticipation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.guetteteskilometres.constants.GTKArguments
-import com.example.guetteteskilometres.constants.GTKRoutes
+import androidx.navigation.toRoute
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.data.repository.PersonRepository
+import com.example.guetteteskilometres.ui.navigation.NewParticipation
 
 fun NavGraphBuilder.newParticipation(
     navigations: NewParticipationNavigations,
@@ -16,12 +14,9 @@ fun NavGraphBuilder.newParticipation(
     participationRepository: ParticipationRepository,
     personRepository: PersonRepository
 ) {
-    composable(
-        GTKRoutes.newParticipation,
-        arguments = listOf(navArgument(GTKArguments.idEvent) { type = NavType.LongType })
-    ) { backStackEntry ->
-        val idEvent = backStackEntry.arguments?.getLong(GTKArguments.idEvent)
-        val idParticipation = backStackEntry.arguments?.getString(GTKArguments.idParticipation)?.toLong()
+    composable<NewParticipation> { backStackEntry ->
+        val arguments: NewParticipation = backStackEntry.toRoute()
+        // TODO FCH : retour
         val idPerson = backStackEntry.savedStateHandle.get<String>("ID_PERSON")?.toLong()
         backStackEntry.savedStateHandle.remove<String>("ID_PERSON")
         val viewModel = NewParticipationViewModel(
@@ -32,8 +27,8 @@ fun NavGraphBuilder.newParticipation(
         NewParticipationScreen(
             navigations = navigations,
             viewModel = viewModel,
-            idEvent = idEvent,
-            idParticipation = idParticipation,
+            idEvent = arguments.idEvent,
+            idParticipation = arguments.idParticipation,
             idPerson = idPerson
         )
     }

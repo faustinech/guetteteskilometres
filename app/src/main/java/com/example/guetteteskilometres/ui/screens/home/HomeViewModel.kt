@@ -1,7 +1,5 @@
 package com.example.guetteteskilometres.ui.screens.home
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
@@ -10,9 +8,9 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     val eventRepository: EventRepository,
     val participationRepository: ParticipationRepository
 ): BaseViewModel() {

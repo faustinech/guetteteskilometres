@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android)
 
     kotlin("kapt")
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -65,6 +66,9 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.bundles.compose.navigation)
     implementation(libs.immutable.collections)
+    implementation(libs.hilt.navigation)
+    implementation(libs.serialization)
+    implementation(libs.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

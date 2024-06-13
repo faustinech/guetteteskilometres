@@ -1,28 +1,23 @@
 package com.example.guetteteskilometres.ui.screens.newperson
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.guetteteskilometres.constants.GTKArguments
-import com.example.guetteteskilometres.constants.GTKRoutes
+import androidx.navigation.toRoute
 import com.example.guetteteskilometres.data.repository.PersonRepository
+import com.example.guetteteskilometres.ui.navigation.NewPerson
 
 fun NavGraphBuilder.newPerson(
     navigations: NewPersonNavigations,
     personRepository: PersonRepository
 ) {
-    composable(
-        GTKRoutes.newPerson,
-        arguments = listOf(navArgument(GTKArguments.idEvent) { type = NavType.LongType })
-    ) { backStackEntry ->
-        val idEvent = backStackEntry.arguments?.getLong(GTKArguments.idEvent)
+    composable<NewPerson> { backStackEntry ->
+        val arguments: NewPerson = backStackEntry.toRoute()
         val viewModel = NewPersonViewModel(
             personRepository = personRepository
         )
         NewPersonScreen(
             navigations = navigations,
-            viewModel = viewModel, idEvent = idEvent
+            viewModel = viewModel, idEvent = arguments.idEvent
         )
     }
 }

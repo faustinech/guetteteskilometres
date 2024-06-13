@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.guetteteskilometres.constants.GTKArguments
-import com.example.guetteteskilometres.constants.GTKRoutes
 import com.example.guetteteskilometres.di.AppDependencies
 import com.example.guetteteskilometres.ui.screens.home.HomeNavigations
 import com.example.guetteteskilometres.ui.screens.home.home
@@ -26,18 +24,16 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = GTKRoutes.events,
+        startDestination = Home,
         modifier = modifier
     ) {
         home(
             navigations = HomeNavigations(
                 navigateToEvent = { event ->
-                    val url = GTKRoutes.participations.replace("{${GTKArguments.idEvent}}", event.id.toString())
-                    navController.navigate(url)
+                    navController.navigate(Participations(event.id))
                 },
                 navigateToNewEvent = {
-                    val url = GTKRoutes.newEvent
-                    navController.navigate(url)
+                    navController.navigate(NewEvent)
                 }
             ),
             eventRepository = appDependencies.eventRepository,
@@ -53,15 +49,12 @@ fun Navigation(
             navigations = ParticipationsNavigations(
                 navigateUp = navController::popBackStack,
                 navigateToParticipation = { idEvent, idParticipation ->
-                    val url = GTKRoutes.editParticipation
-                        .replace("{${GTKArguments.idEvent}}", idEvent.toString())
-                        .replace(GTKArguments.idParticipation, idParticipation?.toString().orEmpty())
-                    navController.navigate(url)
-                },
-                navigateToNewParticipation = { idEvent ->
-                    val url = GTKRoutes.newParticipation
-                        .replace("{${GTKArguments.idEvent}}", idEvent.toString())
-                    navController.navigate(url)
+                    navController.navigate(
+                        NewParticipation(
+                            idEvent = idEvent,
+                            idParticipation = idParticipation ?: -1
+                        )
+                    )
                 }
             ),
             eventRepository = appDependencies.eventRepository,
@@ -71,9 +64,7 @@ fun Navigation(
             navigations = NewParticipationNavigations(
                 navigateUp = navController::popBackStack,
                 navigateToNewPerson = { idEvent ->
-                    val url = GTKRoutes.newPerson
-                        .replace("{${GTKArguments.idEvent}}", idEvent.toString())
-                    navController.navigate(url)
+                    navController.navigate(NewPerson(idEvent))
                 }
             ),
             eventRepository = appDependencies.eventRepository,
