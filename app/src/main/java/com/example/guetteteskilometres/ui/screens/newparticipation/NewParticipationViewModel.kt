@@ -22,6 +22,7 @@ class NewParticipationViewModel(
     val personRepository: PersonRepository,
     val eventRepository: EventRepository
 ): BaseViewModel() {
+    private var _idParticipation: Long? = null
 
     private val _state = MutableStateFlow(
         NewParticipationState(
@@ -32,7 +33,8 @@ class NewParticipationViewModel(
             endMeters = null,
             idStartErrorMessage = null,
             idPersonErrorMessage = null,
-            idEndErrorMessage = null
+            idEndErrorMessage = null,
+            dialog = Dialog.None
         )
     )
     val state: StateFlow<NewParticipationState> = _state
@@ -45,6 +47,7 @@ class NewParticipationViewModel(
     val events: SharedFlow<NewParticipationEvents> = _events
 
     fun initialize(idEvent: Long?, idParticipation: Long?) = launchInitStateAsync {
+        _idParticipation = idParticipation
         idEvent?.let {
             val participation = idParticipation?.let { id -> participationRepository.getParticipation(id) }
             _state.update {
@@ -99,6 +102,27 @@ class NewParticipationViewModel(
         }
     }
 
+    fun dialogDismiss() {
+        _state.update {
+            it.copy(dialog = Dialog.None)
+        }
+    }
+
+    fun requestDelete() {
+        _state.update {
+            it.copy(dialog = Dialog.ConfirmSuppressionParticipation)
+        }
+    }
+
+    fun delete() {
+        viewModelScope.launch {
+            _idParticipation?.let { id ->
+                participationRepository.removeParticipation(id)
+            }
+            _events.emit(NewParticipationEvents.NavigateUp)
+        }
+    }
+
     fun validate() {
         viewModelScope.launch {
             val startMeters = _state.value.startMeters
@@ -117,6 +141,7 @@ class NewParticipationViewModel(
                 }
             } else {
                 participationRepository.saveParticipation(
+                    idParticipation = _idParticipation,
                     startMeters = startMeters,
                     endMeters = endMeters,
                     person = person,

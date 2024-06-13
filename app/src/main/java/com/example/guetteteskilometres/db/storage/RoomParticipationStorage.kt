@@ -20,4 +20,8 @@ class RoomParticipationStorage(
     override suspend fun getParticipation(idParticipation: Long): Participation? {
         return participationDao.getParticipation(idParticipation)?.toModel()
     }
+
+    override suspend fun removeParticipation(idParticipation: Long) {
+        participationDao.removeParticipation(idParticipation)
+    }
 }

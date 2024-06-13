@@ -12,5 +12,11 @@ data class NewParticipationState(
     val endMeters: Int?,
     val idPersonErrorMessage: Int?,
     val idStartErrorMessage: Int?,
-    val idEndErrorMessage: Int?
+    val idEndErrorMessage: Int?,
+    val dialog: Dialog
 )
+
+sealed interface Dialog {
+    data object None: Dialog
+    data object ConfirmSuppressionParticipation: Dialog
+}

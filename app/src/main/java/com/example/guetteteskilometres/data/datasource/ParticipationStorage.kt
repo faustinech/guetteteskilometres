@@ -8,4 +8,6 @@ interface ParticipationStorage {
     suspend fun saveParticipation(participation: Participation)
 
     suspend fun getParticipation(idParticipation: Long): Participation?
+
+    suspend fun removeParticipation(idParticipation: Long)
 }

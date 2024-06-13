@@ -2,6 +2,7 @@ package com.example.guetteteskilometres.ui.screens.newparticipation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +48,7 @@ import com.example.guetteteskilometres.ui.components.CustomField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
 import com.example.guetteteskilometres.ui.theme.background
 import com.example.guetteteskilometres.ui.theme.dark
+import com.example.guetteteskilometres.ui.theme.done
 import com.example.guetteteskilometres.ui.theme.light
 import com.example.guetteteskilometres.ui.theme.valid
 import kotlinx.collections.immutable.persistentListOf
@@ -78,7 +83,10 @@ fun NewParticipationScreen(
                 idEvent?.let { id ->
                     navigations.navigateToNewPerson(id)
                 }
-            }
+            },
+            onDeleteDismissClicked = viewModel::dialogDismiss,
+            onDeleteParticipationClicked = viewModel::requestDelete,
+            onDeleteConfirmationClicked = viewModel::delete
         )
     )
 
@@ -120,17 +128,56 @@ private fun ScreenBody(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = interactions.onValidationClicked,
-                containerColor = valid
+            Row(
+                modifier = Modifier
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = null
-                )
+                FloatingActionButton(
+                    onClick = interactions.onDeleteParticipationClicked,
+                    containerColor = done
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null
+                    )
+                }
+                FloatingActionButton(
+                    onClick = interactions.onValidationClicked,
+                    containerColor = valid,
+                    modifier = Modifier.padding(start = 10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Check,
+                        contentDescription = null
+                    )
+                }
             }
         }
     ) { innerPadding ->
+        when (state.dialog) {
+            Dialog.ConfirmSuppressionParticipation -> AlertDialog(
+                title = {
+                    Text(text = stringResource(id = R.string.title_confirmation))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.message_confirmation_suppression))
+                },
+                onDismissRequest = interactions.onDeleteDismissClicked,
+                confirmButton = {
+                    Button(onClick = interactions.onDeleteConfirmationClicked) {
+                        Text(text = stringResource(id = R.string.common_yes))
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = interactions.onDeleteDismissClicked) {
+                        Text(text = stringResource(id = R.string.common_no))
+                    }
+                }
+            )
+            Dialog.None -> { }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -146,6 +193,7 @@ private fun ScreenBody(
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // TODO : voir pour le focus du champ participant
                 var expanded by remember { mutableStateOf(false) }
                 val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
                 ExposedDropdownMenuBox(
@@ -155,7 +203,7 @@ private fun ScreenBody(
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.menuAnchor(),
-                        value = state.person?.firstname.orEmpty(), // TODO : ajouter le nom ?
+                        value = "${state.person?.firstname.orEmpty()} ${state.person?.name.orEmpty()}",
                         onValueChange = {
                             // Ne rien faire ?
                         },
@@ -248,10 +296,11 @@ private fun NewParticipationScreenPreview() {
                 persons = persistentListOf(),
                 idStartErrorMessage = null,
                 idEndErrorMessage = null,
-                idPersonErrorMessage = null
+                idPersonErrorMessage = null,
+                dialog = Dialog.None
             ),
             interactions = NewParticipationInteractions(
-                { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }

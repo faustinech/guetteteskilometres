@@ -8,5 +8,8 @@ data class NewParticipationInteractions(
     val onEndMetersChanged: (String) -> Unit,
     val onAddPersonClicked: () -> Unit,
     val onValidationClicked: () -> Unit,
-    val onBackClicked: () -> Unit
+    val onBackClicked: () -> Unit,
+    val onDeleteParticipationClicked: () -> Unit,
+    val onDeleteConfirmationClicked: () -> Unit,
+    val onDeleteDismissClicked: () -> Unit
 )

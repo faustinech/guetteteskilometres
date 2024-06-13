@@ -197,7 +197,7 @@ private fun ScreenBody(
                     modifier = Modifier.padding(10.dp)
                 ) {
                     items(state.participations) {
-                        it.Compose()
+                        it.Compose(interactions)
                     }
                 }
             }
@@ -217,15 +217,21 @@ private fun ScreenBody(
 }
 
 @Composable
-fun Participation.Compose() {
-    val total = abs(startMeters - (endMeters ?: 0))
+fun Participation.Compose(
+    interactions: ParticipationsInteractions
+) {
+    val total = if (endMeters != null) {
+        abs(startMeters - endMeters)
+    } else null
     CustomCard(
         title = "${person.firstname} ${person.name ?: ""}",
-        leftText = stringResource(id = R.string.text_nb_metres, total),
+        leftText = if (total != null) {
+            stringResource(id = R.string.text_nb_metres, total)
+        } else stringResource(id = R.string.label_in_progress),
         rightText = null,
         backgroundColor = light
     ) {
-        // TODO
+        interactions.onParticipationClicked(id)
     }
 }
 

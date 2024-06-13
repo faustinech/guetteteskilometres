@@ -25,6 +25,8 @@
     <string name="label_nb_kilometres_totaux">Total - %s kms</string>
     <string name="label_no_participation">Il n\'y a pas de participations pour l\'événement : %s</string>
     <string name="label_filter">Filtrer</string>
+    <string name="label_in_progress">En cours</string>
+    <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
 
     <string name="label_firstname">Prénom</string>
     <string name="label_name">Nom</string>

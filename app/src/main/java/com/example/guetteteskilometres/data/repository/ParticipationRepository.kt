@@ -17,11 +17,17 @@ class ParticipationRepository(
         }
     }
 
-    suspend fun saveParticipation(startMeters: Int, endMeters: Int?, person: Person, event: Event) {
+    suspend fun saveParticipation(
+        idParticipation: Long?,
+        startMeters: Int,
+        endMeters: Int?,
+        person: Person,
+        event: Event
+    ) {
         withContext(Dispatchers.IO) {
             storage.saveParticipation(
                 Participation(
-                    id = 0,
+                    id = idParticipation ?: 0,
                     person = person,
                     startMeters = startMeters,
                     endMeters = endMeters,
@@ -34,6 +40,12 @@ class ParticipationRepository(
     suspend fun getParticipation(idParticipation: Long): Participation? {
         return withContext(Dispatchers.IO) {
             storage.getParticipation(idParticipation)
+        }
+    }
+
+    suspend fun removeParticipation(idParticipation: Long) {
+        withContext(Dispatchers.IO) {
+            storage.removeParticipation(idParticipation)
         }
     }
 }

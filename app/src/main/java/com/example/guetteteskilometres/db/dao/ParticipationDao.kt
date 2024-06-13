@@ -1,15 +1,15 @@
 package com.example.guetteteskilometres.db.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.example.guetteteskilometres.db.entity.ParticipationEntity
 import com.example.guetteteskilometres.db.entity.embedded.ParticipationWithReferencesEntity
 
 @Dao
 interface ParticipationDao {
-    @Insert
+    @Upsert
     suspend fun insertParticipation(participationEntity: ParticipationEntity): Long?
 
     @Update
