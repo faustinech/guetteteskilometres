@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.guetteteskilometres.db.entity.PersonEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersonDao {
@@ -11,7 +12,7 @@ interface PersonDao {
     suspend fun insertPerson(personEntity: PersonEntity): Long?
 
     @Query("select * from person where id_event = :id")
-    suspend fun getEventPersons(id: Long): List<PersonEntity>
+    fun getEventPersons(id: Long): Flow<List<PersonEntity>>
 
     @Query("select * from person where id = :idPerson")
     suspend fun getPerson(idPerson: Long): PersonEntity?

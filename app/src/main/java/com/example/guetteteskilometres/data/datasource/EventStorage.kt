@@ -1,9 +1,10 @@
 package com.example.guetteteskilometres.data.datasource
 
 import com.example.guetteteskilometres.data.model.Event
+import kotlinx.coroutines.flow.Flow
 
 interface EventStorage {
-    suspend fun getEvents(): List<Event>
+    fun getEvents(): Flow<List<Event>>
 
     suspend fun saveEvent(event: Event)
 

@@ -1,5 +1,6 @@
 package com.example.guetteteskilometres.ui.screens.newparticipation
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -19,11 +20,13 @@ fun NavGraphBuilder.newParticipation(
         // TODO FCH : retour
         val idPerson = backStackEntry.savedStateHandle.get<String>("ID_PERSON")?.toLong()
         backStackEntry.savedStateHandle.remove<String>("ID_PERSON")
-        val viewModel = NewParticipationViewModel(
-            eventRepository = eventRepository,
-            participationRepository = participationRepository,
-            personRepository = personRepository
-        )
+        val viewModel = viewModel {
+            NewParticipationViewModel(
+                eventRepository = eventRepository,
+                participationRepository = participationRepository,
+                personRepository = personRepository
+            )
+        }
         NewParticipationScreen(
             navigations = navigations,
             viewModel = viewModel,

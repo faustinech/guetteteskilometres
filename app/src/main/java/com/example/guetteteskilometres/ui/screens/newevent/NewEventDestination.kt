@@ -1,3 +1,4 @@
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.guetteteskilometres.data.repository.EventRepository
@@ -11,9 +12,11 @@ fun NavGraphBuilder.newEvent(
     eventRepository: EventRepository
 ) {
     composable<NewEvent> {
-        val viewModel = NewEventViewModel(
-            eventRepository = eventRepository
-        )
+        val viewModel = viewModel {
+            NewEventViewModel(
+                eventRepository = eventRepository
+            )
+        }
         NewEventScreen(
             navigations = navigations,
             viewModel = viewModel

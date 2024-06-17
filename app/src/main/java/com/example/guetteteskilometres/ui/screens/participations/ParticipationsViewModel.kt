@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,15 +41,17 @@ class ParticipationsViewModel(
     )
     val events: SharedFlow<ParticipationsEvents> = _events
 
-    fun initialize(idEvent: Long?) = launchInitStateAsync {
+    fun initialize(idEvent: Long?) = launchInitState {
         idEvent?.let {
-            allParticipations = participationRepository.getParticipations(idEvent)
-            _state.update {
-                it.copy(
-                    event = eventRepository.getEvent(idEvent),
-                    participations = allParticipations.toImmutableList()
-                )
-            }
+            participationRepository.getParticipations(idEvent).onEach { participations ->
+                allParticipations = participations
+                _state.update {
+                    it.copy(
+                        event = eventRepository.getEvent(idEvent),
+                        participations = allParticipations.toImmutableList()
+                    )
+                }
+            }.launchIn(viewModelScope)
         }
     }
 

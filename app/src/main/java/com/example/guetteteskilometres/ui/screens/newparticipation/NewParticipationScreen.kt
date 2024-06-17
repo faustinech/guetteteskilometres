@@ -38,6 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -202,8 +204,18 @@ private fun ScreenBody(
                     modifier = Modifier.weight(3f)
                 ) {
                     OutlinedTextField(
-                        modifier = Modifier.menuAnchor(),
-                        value = "${state.person?.firstname.orEmpty()} ${state.person?.name.orEmpty()}",
+                        modifier = Modifier
+                            .menuAnchor()
+                            .clickable(
+                                onClick = {
+                                    expanded = if (state.persons.isNotEmpty()) {
+                                        !expanded
+                                    } else {
+                                        false
+                                    }
+                                }
+                            ),
+                        value = state.libellePerson,
                         onValueChange = {
                             // Ne rien faire ?
                         },
@@ -214,9 +226,15 @@ private fun ScreenBody(
                             Icon(
                                 imageVector = icon,
                                 contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    expanded = !expanded
-                                }
+                                modifier = Modifier.clickable(
+                                    onClick = {
+                                        expanded = if (state.persons.isNotEmpty()) {
+                                            !expanded
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                )
                             )
                         },
                         isError = state.idPersonErrorMessage != null,
@@ -297,7 +315,8 @@ private fun NewParticipationScreenPreview() {
                 idStartErrorMessage = null,
                 idEndErrorMessage = null,
                 idPersonErrorMessage = null,
-                dialog = Dialog.None
+                dialog = Dialog.None,
+                libellePerson = ""
             ),
             interactions = NewParticipationInteractions(
                 { }, { }, { }, { }, { }, { }, { }, { }, { }

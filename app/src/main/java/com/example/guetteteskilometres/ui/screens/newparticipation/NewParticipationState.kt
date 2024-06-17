@@ -8,6 +8,7 @@ data class NewParticipationState(
     val person: Person?,
     val event: Event?,
     val persons: ImmutableList<Person>,
+    val libellePerson: String,
     val startMeters: Int?,
     val endMeters: Int?,
     val idPersonErrorMessage: Int?,

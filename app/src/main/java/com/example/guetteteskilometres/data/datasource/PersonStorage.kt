@@ -1,9 +1,10 @@
 package com.example.guetteteskilometres.data.datasource
 
 import com.example.guetteteskilometres.data.model.Person
+import kotlinx.coroutines.flow.Flow
 
 interface PersonStorage {
-    suspend fun getPersons(idEvent: Long): List<Person> // TODO : rendre non suspend ?
+    fun getPersons(idEvent: Long): Flow<List<Person>>
 
     suspend fun savePerson(person: Person): Long?
 

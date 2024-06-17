@@ -9,11 +9,8 @@ import kotlinx.coroutines.withContext
 class EventRepository(
     private val storage: EventStorage
 ) {
-    suspend fun getEvents(): List<Event> {
-        // TODO FCH : utiliser des flows ?
-        return withContext(Dispatchers.IO) {
-            storage.getEvents()
-        }
+    fun getEvents(): Flow<List<Event>> {
+        return storage.getEvents()
     }
 
     suspend fun saveEvent(name: String) =

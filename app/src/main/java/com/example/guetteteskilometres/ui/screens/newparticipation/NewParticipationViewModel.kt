@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,7 +36,8 @@ class NewParticipationViewModel(
             idStartErrorMessage = null,
             idPersonErrorMessage = null,
             idEndErrorMessage = null,
-            dialog = Dialog.None
+            dialog = Dialog.None,
+            libellePerson = ""
         )
     )
     val state: StateFlow<NewParticipationState> = _state
@@ -50,22 +53,24 @@ class NewParticipationViewModel(
         _idParticipation = idParticipation
         idEvent?.let {
             val participation = idParticipation?.let { id -> participationRepository.getParticipation(id) }
-            _state.update {
-                it.copy(
-                    person = it.person ?: participation?.person,
-                    event = participation?.event ?: eventRepository.getEvent(idEvent),
-                    persons = personRepository.getPersons(idEvent).toImmutableList(),
-                    startMeters = participation?.startMeters,
-                    endMeters = participation?.endMeters
-                )
-            }
+            personRepository.getPersons(idEvent).onEach { persons ->
+                _state.update {
+                    it.copy(
+                        person = it.person ?: participation?.person,
+                        event = participation?.event ?: eventRepository.getEvent(idEvent),
+                        persons = persons.toImmutableList(),
+                        startMeters = participation?.startMeters,
+                        endMeters = participation?.endMeters
+                    )
+                }
+            }.launchIn(viewModelScope)
         }
     }
 
     fun updateStartMeters(meters: String) {
         try {
             _state.update {
-                it.copy(startMeters = meters.toInt())
+                it.copy(startMeters = if (meters.isEmpty()) 0 else meters.toInt())
             }
         } catch (e: NumberFormatException) {
             _state.update {
@@ -77,7 +82,7 @@ class NewParticipationViewModel(
     fun updateEndMeters(meters: String) {
         try {
             _state.update {
-                it.copy(endMeters = meters.toInt())
+                it.copy(endMeters = if (meters.isEmpty()) null else meters.toInt())
             }
         } catch (e: NumberFormatException) {
             _state.update {
@@ -88,7 +93,14 @@ class NewParticipationViewModel(
 
     fun updatePerson(person: Person) {
         _state.update {
-            it.copy(person = person)
+            it.copy(
+                person = person,
+                libellePerson = if (person.name == null) {
+                    person.firstname
+                } else {
+                    "${person.firstname} ${person.name}"
+                }
+            )
         }
     }
 
@@ -96,7 +108,14 @@ class NewParticipationViewModel(
         viewModelScope.launch {
             personRepository.getPerson(idPerson)?.let { person ->
                 _state.update {
-                    it.copy(person = person)
+                    it.copy(
+                        person = person,
+                        libellePerson = if (person.name == null) {
+                            person.firstname
+                        } else {
+                            "${person.firstname} ${person.name}"
+                        }
+                    )
                 }
             }
         }
@@ -141,7 +160,7 @@ class NewParticipationViewModel(
                 }
             } else {
                 participationRepository.saveParticipation(
-                    idParticipation = _idParticipation,
+                    idParticipation = if (_idParticipation != -1L) _idParticipation else 0,
                     startMeters = startMeters,
                     endMeters = endMeters,
                     person = person,

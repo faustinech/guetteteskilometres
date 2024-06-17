@@ -61,8 +61,14 @@ fun ParticipationsScreen(
         state = state,
         interactions = ParticipationsInteractions(
             onBackClicked = { navigations.navigateUp() },
-            onCreationParticipationClicked = { navigations.navigateToParticipation(idEvent, null) },
-            onParticipationClicked = { idParticipation -> navigations.navigateToParticipation(idEvent, idParticipation) },
+            onCreationParticipationClicked = {
+                viewModel.updateFilter(null)
+                navigations.navigateToParticipation(idEvent, null)
+            },
+            onParticipationClicked = { idParticipation ->
+                viewModel.updateFilter(null)
+                navigations.navigateToParticipation(idEvent, idParticipation)
+            },
             onClotureEventClicked = viewModel::closeEvent,
             onFilterChanged = viewModel::updateFilter,
             onConfirmClotureClicked = viewModel::confirmClotureEvent,
@@ -160,12 +166,12 @@ private fun ScreenBody(
             Dialog.None -> { }
         }
 
-        if (state.participations.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            if (state.participations.isNotEmpty() || (state.participations.isEmpty() && !state.filter.isNullOrEmpty())) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -190,28 +196,47 @@ private fun ScreenBody(
                     idLabel = R.string.label_filter,
                     value = state.filter,
                     idErrorMessage = null,
-                    onValueChange = interactions.onFilterChanged
+                    onValueChange = interactions.onFilterChanged,
+                    onClearFilterClicked = { interactions.onFilterChanged("") }
                 )
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    items(state.participations) {
-                        it.Compose(interactions)
+                    if (state.participations.isNotEmpty()) {
+                        items(state.participations) {
+                            it.Compose(interactions)
+                        }
+                    } else {
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.text_no_participations),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 5.dp)
+                            )
+                        }
                     }
                 }
+            } else {
+                Text(
+                    text = stringResource(
+                        id = R.string.label_no_participation,
+                        state.event?.name.orEmpty()
+                    ),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp)
+                )
             }
-        } else {
-            Text(
-                text = stringResource(id = R.string.label_no_participation, state.event?.name.orEmpty()),
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp)
-            )
         }
     }
 }
@@ -278,6 +303,31 @@ private fun HomePreview() {
 @Preview(showBackground = true)
 @Composable
 private fun NoParticipationPreview() {
+    GuetteTesKilometresTheme {
+        val participations = persistentListOf<Participation>()
+        ScreenBody(
+            state = ParticipationsState(
+                event = Event(
+                    id = 1,
+                    name = "100 kilomètres",
+                    totalMeters = 0,
+                    isDone = false,
+                    nbParticipants = null
+                ),
+                participations = participations,
+                filter = "",
+                dialog = Dialog.None
+            ),
+            interactions = ParticipationsInteractions(
+                { }, { }, { }, { }, { }, { }, { }
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ConfirmationPreview() {
     GuetteTesKilometresTheme {
         val participations = persistentListOf<Participation>()
         ScreenBody(

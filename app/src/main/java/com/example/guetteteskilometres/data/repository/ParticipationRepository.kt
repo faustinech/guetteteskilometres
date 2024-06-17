@@ -5,16 +5,14 @@ import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
 import com.example.guetteteskilometres.data.model.Person
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class ParticipationRepository(
     private val storage: ParticipationStorage
 ) {
-    suspend fun getParticipations(idEvent: Long): List<Participation> {
-        // TODO FCH : utiliser des flows ?
-        return withContext(Dispatchers.IO) {
-            storage.getParticipations(idEvent)
-        }
+    fun getParticipations(idEvent: Long): Flow<List<Participation>> {
+        return storage.getParticipations(idEvent)
     }
 
     suspend fun saveParticipation(

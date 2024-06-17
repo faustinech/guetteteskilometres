@@ -3,16 +3,14 @@ package com.example.guetteteskilometres.data.repository
 import com.example.guetteteskilometres.data.datasource.PersonStorage
 import com.example.guetteteskilometres.data.model.Person
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class PersonRepository(
     private val storage: PersonStorage
 ) {
-    suspend fun getPersons(idEvent: Long): List<Person> {
-        // TODO : utiliser des flows ?
-        return withContext(Dispatchers.IO) {
-            storage.getPersons(idEvent)
-        }
+    fun getPersons(idEvent: Long): Flow<List<Person>> {
+        return storage.getPersons(idEvent)
     }
 
     suspend fun savePerson(name: String?, firstname: String, idEvent: Long): Long? {

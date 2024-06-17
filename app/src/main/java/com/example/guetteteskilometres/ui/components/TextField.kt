@@ -1,9 +1,13 @@
 package com.example.guetteteskilometres.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -19,7 +23,8 @@ fun CustomField(
     @StringRes idLabel: Int,
     value: String?,
     @StringRes idErrorMessage: Int?,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onClearFilterClicked: () -> Unit = { }
 ) {
     OutlinedTextField(
         label = { Text(text = stringResource(id = idLabel)) },
@@ -36,6 +41,15 @@ fun CustomField(
             imeAction = ImeAction.Done
         ),
         isError = idErrorMessage != null,
+        trailingIcon = if (!value.isNullOrEmpty()) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = null,
+                    modifier = Modifier.clickable(onClick = onClearFilterClicked)
+                )
+            }
+        } else null,
         supportingText = {
             if (idErrorMessage != null) {
                 Text(

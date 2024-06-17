@@ -1,9 +1,10 @@
 package com.example.guetteteskilometres.data.datasource
 
 import com.example.guetteteskilometres.data.model.Participation
+import kotlinx.coroutines.flow.Flow
 
 interface ParticipationStorage {
-    suspend fun getParticipations(idEvent: Long): List<Participation>
+    fun getParticipations(idEvent: Long): Flow<List<Participation>>
 
     suspend fun saveParticipation(participation: Participation)
 

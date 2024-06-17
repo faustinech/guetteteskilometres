@@ -1,5 +1,6 @@
 package com.example.guetteteskilometres.ui.screens.newperson
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -12,9 +13,11 @@ fun NavGraphBuilder.newPerson(
 ) {
     composable<NewPerson> { backStackEntry ->
         val arguments: NewPerson = backStackEntry.toRoute()
-        val viewModel = NewPersonViewModel(
-            personRepository = personRepository
-        )
+        val viewModel = viewModel {
+            NewPersonViewModel(
+                personRepository = personRepository
+            )
+        }
         NewPersonScreen(
             navigations = navigations,
             viewModel = viewModel, idEvent = arguments.idEvent

@@ -5,13 +5,15 @@ import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.db.dao.EventDao
 import com.example.guetteteskilometres.db.mapping.toEntity
 import com.example.guetteteskilometres.db.mapping.toModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class RoomEventStorage(
     private val eventDao: EventDao
 ): EventStorage {
 
-    override suspend fun getEvents(): List<Event> {
-        return eventDao.getEvents().map { it.toModel() }
+    override fun getEvents(): Flow<List<Event>> {
+        return eventDao.getEvents().map { events -> events.map { it.toModel() } }
     }
 
     override suspend fun saveEvent(event: Event) {

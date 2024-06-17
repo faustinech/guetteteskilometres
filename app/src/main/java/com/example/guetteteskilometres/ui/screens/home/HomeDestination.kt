@@ -1,5 +1,6 @@
 package com.example.guetteteskilometres.ui.screens.home
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.guetteteskilometres.data.repository.EventRepository
@@ -12,10 +13,12 @@ fun NavGraphBuilder.home(
     participationRepository: ParticipationRepository
 ) {
     composable<Home> {
-        val viewModel = HomeViewModel(
-            eventRepository = eventRepository,
-            participationRepository = participationRepository
-        )
+        val viewModel = viewModel {
+            HomeViewModel(
+                eventRepository = eventRepository,
+                participationRepository = participationRepository
+            )
+        }
         HomeScreen(
             navigations = navigations,
             viewModel = viewModel
