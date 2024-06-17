@@ -20,7 +20,7 @@ interface EventDao {
     suspend fun closeEvent(id: Long)
 
     @Query("select * from event")
-    fun getEvents(): Flow<List<EventWithReferencesEntity>>
+    fun getEvents(): Flow<List<EventEntity>>
 
     @Query("select * from event where id = :id")
     suspend fun getEvent(id: Long): EventEntity?
