@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -24,7 +25,8 @@ fun CustomField(
     value: String?,
     @StringRes idErrorMessage: Int?,
     onValueChange: (String) -> Unit,
-    onClearFilterClicked: () -> Unit = { }
+    onClearFilterClicked: () -> Unit = { },
+    keyboardType: KeyboardType
 ) {
     OutlinedTextField(
         label = { Text(text = stringResource(id = idLabel)) },
@@ -38,7 +40,8 @@ fun CustomField(
             ),
         maxLines = 1,
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done
+            imeAction = ImeAction.Done,
+            keyboardType = keyboardType
         ),
         isError = idErrorMessage != null,
         trailingIcon = if (!value.isNullOrEmpty()) {

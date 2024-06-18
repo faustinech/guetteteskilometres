@@ -1,26 +1,18 @@
 package com.example.guetteteskilometres.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel @Inject constructor(
     val eventRepository: EventRepository,
     val participationRepository: ParticipationRepository
@@ -34,14 +26,15 @@ class HomeViewModel @Inject constructor(
         eventRepository.getEvents().onEach { events ->
             events.forEach {
                 participationRepository.getParticipations(it.id).onEach { participations ->
-                    it.nbParticipants = participations.groupBy { p -> p.person }.size
-                    it.totalMeters = participations.sumOf { p -> p.totalMeters }
+                    val nbParticipants = participations.groupBy { p -> p.person }.size
+                    val totalMeters = participations.sumOf { p -> p.totalMeters }
+                    val updatedEvent = it.copy(nbParticipants = nbParticipants, totalMeters = totalMeters)
+                    _state.update { state ->
+                        state.copy(events = events.map { event ->
+                            if (event.id == updatedEvent.id) updatedEvent else event
+                        }.toImmutableList())
+                    }
                 }.launchIn(viewModelScope)
-            }
-            _state.update {
-                it.copy(
-                    events = events.toImmutableList()
-                )
             }
         }.launchIn(viewModelScope)
     }

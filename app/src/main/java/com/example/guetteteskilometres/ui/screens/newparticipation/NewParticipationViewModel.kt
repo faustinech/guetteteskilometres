@@ -53,13 +53,14 @@ class NewParticipationViewModel(
         _idParticipation = idParticipation
         idEvent?.let {
             val participation = idParticipation?.let { id -> participationRepository.getParticipation(id) }
+            val startMeters = participation?.startMeters ?: participationRepository.getLastParticipation(idEvent)?.endMeters
             personRepository.getPersons(idEvent).onEach { persons ->
                 _state.update {
                     it.copy(
                         person = it.person ?: participation?.person,
                         event = participation?.event ?: eventRepository.getEvent(idEvent),
                         persons = persons.toImmutableList(),
-                        startMeters = participation?.startMeters,
+                        startMeters = startMeters,
                         endMeters = participation?.endMeters
                     )
                 }

@@ -46,4 +46,10 @@ class ParticipationRepository(
             storage.removeParticipation(idParticipation)
         }
     }
+
+    suspend fun getLastParticipation(idEvent: Long): Participation? {
+        return withContext(Dispatchers.IO) {
+            storage.getLastParticipation(idEvent)
+        }
+    }
 }
