@@ -256,10 +256,10 @@ fun Participation.Compose(
             stringResource(id = R.string.text_nb_metres, total)
         } else stringResource(id = R.string.label_in_progress),
         rightText = null,
-        backgroundColor = light
-    ) {
-        interactions.onParticipationClicked(id)
-    }
+        backgroundColor = light,
+        onClick = { interactions.onParticipationClicked(id) },
+        onLongClick = { }
+    )
 }
 
 @Preview(showBackground = true)

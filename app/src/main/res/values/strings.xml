@@ -36,4 +36,5 @@
     <string name="common_no">Non</string>
     <string name="message_confirmation_cloture">Confirmez-vous la clôture de cet événement ?</string>
     <string name="title_confirmation">Confirmation</string>
+    <string name="message_confirmation_suppression_event">Confirmez-vous la suppression de l\'événement %s ?</string>
 </resources>

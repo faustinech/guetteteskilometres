@@ -27,4 +27,8 @@ class RoomEventStorage(
     override suspend fun closeEvent(id: Long) {
         eventDao.closeEvent(id)
     }
+
+    override suspend fun deleteEvent(id: Long) {
+        eventDao.deleteEvent(id)
+    }
 }

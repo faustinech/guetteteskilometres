@@ -11,4 +11,6 @@ interface EventStorage {
     suspend fun getEvent(id: Long): Event?
 
     suspend fun closeEvent(id: Long)
+
+    suspend fun deleteEvent(id: Long)
 }

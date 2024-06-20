@@ -37,4 +37,10 @@ class EventRepository(
             storage.closeEvent(id)
         }
     }
+
+    suspend fun deleteEvent(id: Long) {
+        withContext(Dispatchers.IO) {
+            storage.deleteEvent(id)
+        }
+    }
 }

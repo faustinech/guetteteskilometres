@@ -56,8 +56,10 @@ class ParticipationsViewModel(
     }
 
     fun updateFilter(filter: String?) {
-        // TODO : filter sur autre chose que le prénom ?
-        val filteredParticipations = allParticipations.filter { it.person.firstname.lowercase().contains(filter.orEmpty().lowercase()) }
+        val filteredParticipations = allParticipations.filter {
+            val libelle = "${it.person.firstname} ${it.person.name.orEmpty()}"
+            libelle.lowercase().contains(filter.orEmpty().lowercase())
+        }
         _state.update {
             it.copy(
                 participations = filteredParticipations.toImmutableList(),

@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -49,7 +51,10 @@ fun HomeScreen(
         state = state,
         interactions = HomeInteractions(
             onEventClicked = { event -> navigations.navigateToEvent(event) },
-            onAddEventClicked = navigations.navigateToNewEvent
+            onAddEventClicked = navigations.navigateToNewEvent,
+            onConfirmDialog = viewModel::confirmDeleteEvent,
+            onDismissDialog = viewModel::dismissDialog,
+            onEventLongClicked = viewModel::deleteEvent
         )
     )
 }
@@ -84,6 +89,28 @@ private fun ScreenBody(
            }
         }
     ) { innerPadding ->
+        when (val dialog = state.dialog) {
+            is Dialog.ConfirmSuppression -> AlertDialog(
+                title = {
+                    Text(text = stringResource(id = R.string.title_confirmation))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.message_confirmation_suppression_event, dialog.libelle))
+                },
+                onDismissRequest = interactions.onDismissDialog,
+                confirmButton = {
+                    Button(onClick = interactions.onConfirmDialog) {
+                        Text(text = stringResource(id = R.string.common_yes))
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = interactions.onDismissDialog) {
+                        Text(text = stringResource(id = R.string.common_no))
+                    }
+                }
+            )
+            Dialog.None -> { }
+        }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -93,7 +120,10 @@ private fun ScreenBody(
         ) {
             if (state.events.isNotEmpty()) {
                 items(state.events) { event ->
-                    event.Compose(interactions.onEventClicked)
+                    event.Compose(
+                        onEventClicked = interactions.onEventClicked,
+                        onEventLongClicked = interactions.onEventLongClicked
+                    )
                 }
             } else {
                 item {
@@ -115,7 +145,8 @@ private fun ScreenBody(
 
 @Composable
 fun Event.Compose(
-    onEventClicked: (Event) -> Unit
+    onEventClicked: (Event) -> Unit,
+    onEventLongClicked: (Event) -> Unit
 ) {
     val nbParticipants = nbParticipants ?: 0
     val kilometers = totalMeters?.div(1000f) ?: 0f
@@ -124,10 +155,10 @@ fun Event.Compose(
         leftText = stringResource(id = R.string.text_nb_participants, nbParticipants),
         rightText = if (kilometers == 0f) null else stringResource(id = R.string.text_nb_kilometres, kilometers),
         backgroundColor = if (isDone) done else light,
-        modifier = Modifier.padding(horizontal = 10.dp)
-    ) {
-        onEventClicked(this)
-    }
+        modifier = Modifier.padding(horizontal = 10.dp),
+        onClick = { onEventClicked(this) },
+        onLongClick = { onEventLongClicked(this) }
+    )
 }
 
 @Preview(showBackground = true)
@@ -152,10 +183,12 @@ private fun HomePreview() {
         )
         ScreenBody(
             state = HomeState(
-                events = events
+                events = events,
+                dialog = Dialog.ConfirmSuppression(libelle = "test"),
+                idEventToDelete = null
             ),
             interactions = HomeInteractions(
-                { }, { }
+                { }, { }, { }, { }, { }
             )
         )
     }
@@ -168,10 +201,12 @@ private fun HomeNoEventPreview() {
         val events = persistentListOf<Event>()
         ScreenBody(
             state = HomeState(
-                events = events
+                events = events,
+                dialog = Dialog.None,
+                idEventToDelete = null
             ),
             interactions = HomeInteractions(
-                { }, { }
+                { }, { }, { }, { }, { }
             )
         )
     }
