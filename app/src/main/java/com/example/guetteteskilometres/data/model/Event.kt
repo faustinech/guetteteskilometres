@@ -5,5 +5,6 @@ data class Event(
     val name: String,
     val isDone: Boolean,
     var totalMeters: Int?,
-    var nbParticipants: Int?
+    var nbParticipants: Int?,
+    val participations: List<Participation> = emptyList()
 )

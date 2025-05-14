@@ -3,6 +3,7 @@ package com.example.guetteteskilometres.db.storage
 import com.example.guetteteskilometres.data.datasource.EventStorage
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.db.dao.EventDao
+import com.example.guetteteskilometres.db.dao.ParticipationDao
 import com.example.guetteteskilometres.db.mapping.toEntity
 import com.example.guetteteskilometres.db.mapping.toModel
 import kotlinx.coroutines.flow.Flow

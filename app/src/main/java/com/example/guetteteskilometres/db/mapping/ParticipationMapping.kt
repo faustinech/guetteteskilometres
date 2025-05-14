@@ -1,8 +1,6 @@
 package com.example.guetteteskilometres.db.mapping
 
-import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
-import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.db.entity.ParticipationEntity
 import com.example.guetteteskilometres.db.entity.embedded.ParticipationWithReferencesEntity
 

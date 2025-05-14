@@ -1,19 +1,22 @@
 [versions]
-agp = "8.4.0"
-kotlin = "1.9.0"
+agp = "8.8.0"
+kotlin = "2.1.0"
 coreKtx = "1.10.1"
+
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+
+lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.0"
-composeBom = "2023.08.00"
+composeBom = "2025.03.00"
 compose-navigation="2.8.0-beta03"
 room = "2.6.1"
 google-services = "4.4.0"
 immutable = "0.3.7"
 hilt = "1.2.0"
-serialization = "1.6.3"
+serialization = "1.8.0"
+ksp = "2.1.0-1.0.29"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +48,8 @@ application = { id = "com.android.application", version.ref = "agp" }
 android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services"}
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 compose-navigation = ["compose-navigation"]

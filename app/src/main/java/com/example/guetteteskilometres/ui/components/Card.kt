@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,7 +48,7 @@ fun CustomCard(
             )
             .padding(10.dp)
             .combinedClickable(
-                indication = rememberRipple(bounded = true),
+                indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
                 onLongClick = onLongClick,
                 onClick = onClick

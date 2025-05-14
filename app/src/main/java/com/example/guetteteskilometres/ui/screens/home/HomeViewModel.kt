@@ -1,6 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
@@ -30,17 +31,13 @@ class HomeViewModel @Inject constructor(
 
     fun initialize() = launchInitState {
         eventRepository.getEvents().onEach { events ->
-            events.forEach {
-                participationRepository.getParticipations(it.id).onEach { participations ->
-                    val nbParticipants = participations.groupBy { p -> p.person }.size
-                    val totalMeters = participations.sumOf { p -> p.totalMeters }
-                    val updatedEvent = it.copy(nbParticipants = nbParticipants, totalMeters = totalMeters)
-                    _state.update { state ->
-                        state.copy(events = events.map { event ->
-                            if (event.id == updatedEvent.id) updatedEvent else event
-                        }.toImmutableList())
-                    }
-                }.launchIn(viewModelScope)
+            val updatedEvents = events.map {
+                val nbParticipants = it.participations.groupBy { p -> p.person }.size
+                val totalMeters = it.participations.sumOf { p -> p.totalMeters }
+                it.copy(nbParticipants = nbParticipants, totalMeters = totalMeters)
+            }
+            _state.update { state ->
+                state.copy(events = updatedEvents.toImmutableList())
             }
         }.launchIn(viewModelScope)
     }
