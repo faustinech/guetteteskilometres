@@ -329,10 +329,11 @@ private fun NewParticipationScreenPreview() {
                 idPersonErrorMessage = null,
                 dialog = Dialog.None,
                 libellePerson = "",
-                isLastInput = false
+                isLastInput = false,
+                startCanBeModify = true
             ),
             interactions = NewParticipationInteractions(
-                { }, { }, { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }
