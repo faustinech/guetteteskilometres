@@ -26,7 +26,8 @@ fun CustomField(
     @StringRes idErrorMessage: Int?,
     onValueChange: (String) -> Unit,
     onClearFilterClicked: () -> Unit = { },
-    keyboardType: KeyboardType
+    keyboardType: KeyboardType,
+    isReadOnly: Boolean = false
 ) {
     OutlinedTextField(
         label = { Text(text = stringResource(id = idLabel)) },
@@ -62,6 +63,8 @@ fun CustomField(
                     )
                 )
             }
-        }
+        },
+        readOnly = isReadOnly,
+        enabled = !isReadOnly
     )
 }

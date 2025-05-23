@@ -32,7 +32,8 @@ fun NavGraphBuilder.newParticipation(
             viewModel = viewModel,
             idEvent = arguments.idEvent,
             idParticipation = arguments.idParticipation,
-            idPerson = idPerson
+            idPerson = idPerson,
+            isLastParticipation = arguments.isLastParticipation
         )
     }
 }

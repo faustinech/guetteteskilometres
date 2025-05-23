@@ -67,11 +67,11 @@ fun ParticipationsScreen(
             onBackClicked = { navigations.navigateUp() },
             onCreationParticipationClicked = {
                 viewModel.updateFilter(null)
-                navigations.navigateToParticipation(idEvent, null)
+                navigations.navigateToParticipation(idEvent, null, true)
             },
-            onParticipationClicked = { idParticipation ->
+            onParticipationClicked = { idParticipation, isLastParticipation ->
                 viewModel.updateFilter(null)
-                navigations.navigateToParticipation(idEvent, idParticipation)
+                navigations.navigateToParticipation(idEvent, idParticipation, isLastParticipation)
             },
             onClotureEventClicked = viewModel::closeEvent,
             onFilterChanged = viewModel::updateFilter,
@@ -253,8 +253,10 @@ private fun ScreenBody(
                     modifier = Modifier.padding(10.dp)
                 ) {
                     if (state.participations.isNotEmpty()) {
-                        items(state.participations) {
-                            it.Compose(interactions)
+                        state.participations.forEachIndexed { index, participation ->
+                            item {
+                                participation.Compose(interactions, index == state.participations.size - 1)
+                            }
                         }
                     } else {
                         item {
@@ -292,7 +294,8 @@ private fun ScreenBody(
 
 @Composable
 fun Participation.Compose(
-    interactions: ParticipationsInteractions
+    interactions: ParticipationsInteractions,
+    isLastParticipation: Boolean
 ) {
     val total = if (endMeters != null) {
         abs(startMeters - endMeters)
@@ -304,7 +307,7 @@ fun Participation.Compose(
         } else stringResource(id = R.string.label_in_progress),
         rightText = null,
         backgroundColor = light,
-        onClick = { interactions.onParticipationClicked(id) },
+        onClick = { interactions.onParticipationClicked(id, isLastParticipation) },
         onLongClick = { }
     )
 }
@@ -343,7 +346,7 @@ private fun HomePreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { _, _ ->  }, { }, { }, { }, { }, { }
             )
         )
     }
@@ -368,7 +371,7 @@ private fun NoParticipationPreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { _, _ -> }, { }, { }, { }, { }, { }
             )
         )
     }
@@ -393,7 +396,7 @@ private fun ConfirmationPreview() {
                 dialog = Dialog.ConfirmCloture
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { _, _ -> }, { }, { }, { }, { }, { }
             )
         )
     }

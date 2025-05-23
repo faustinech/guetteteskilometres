@@ -61,11 +61,16 @@ fun NewParticipationScreen(
     viewModel: NewParticipationViewModel,
     idEvent: Long?,
     idParticipation: Long?,
-    idPerson: Long?
+    idPerson: Long?,
+    isLastParticipation: Boolean
 ) {
     val state = viewModel.state.collectAsState().value
 
-    viewModel.initialize(idEvent = idEvent, idParticipation = idParticipation)
+    viewModel.initialize(
+        idEvent = idEvent,
+        idParticipation = idParticipation,
+        isLastParticipation = isLastParticipation
+    )
 
     if (idPerson != null) {
         viewModel.updatePerson(idPerson)
@@ -133,14 +138,16 @@ private fun ScreenBody(
                     .padding(5.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                FloatingActionButton(
-                    onClick = interactions.onDeleteParticipationClicked,
-                    containerColor = done
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = null
-                    )
+                if (state.isLastInput) {
+                    FloatingActionButton(
+                        onClick = interactions.onDeleteParticipationClicked,
+                        containerColor = done
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = null
+                        )
+                    }
                 }
                 FloatingActionButton(
                     onClick = interactions.onValidationClicked,
@@ -259,7 +266,7 @@ private fun ScreenBody(
                         for (person in state.persons) {
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = person.firstname)
+                                    Text(text = "${person.firstname} ${person.name.orEmpty()}")
                                 },
                                 onClick = {
                                     expanded = false
@@ -284,14 +291,16 @@ private fun ScreenBody(
                 value = state.startMeters?.toString(),
                 idErrorMessage = state.idStartErrorMessage,
                 onValueChange = interactions.onStartMetersChanged,
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                isReadOnly = !state.isLastInput
             )
             CustomField(
                 idLabel = R.string.label_end_kilometres,
                 value = state.endMeters?.toString(),
                 idErrorMessage = state.idEndErrorMessage,
                 onValueChange = interactions.onEndMetersChanged,
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                isReadOnly = !state.isLastInput
             )
         }
     }
@@ -317,7 +326,8 @@ private fun NewParticipationScreenPreview() {
                 idEndErrorMessage = null,
                 idPersonErrorMessage = null,
                 dialog = Dialog.None,
-                libellePerson = ""
+                libellePerson = "",
+                isLastInput = false
             ),
             interactions = NewParticipationInteractions(
                 { }, { }, { }, { }, { }, { }, { }, { }, { }

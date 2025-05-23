@@ -37,7 +37,8 @@ class NewParticipationViewModel(
             idPersonErrorMessage = null,
             idEndErrorMessage = null,
             dialog = Dialog.None,
-            libellePerson = ""
+            libellePerson = "",
+            isLastInput = false
         )
     )
     val state: StateFlow<NewParticipationState> = _state
@@ -49,7 +50,7 @@ class NewParticipationViewModel(
     )
     val events: SharedFlow<NewParticipationEvents> = _events
 
-    fun initialize(idEvent: Long?, idParticipation: Long?) = launchInitStateAsync {
+    fun initialize(idEvent: Long?, idParticipation: Long?, isLastParticipation: Boolean) = launchInitStateAsync {
         _idParticipation = idParticipation
         idEvent?.let {
             val participation = idParticipation?.let { id -> participationRepository.getParticipation(id) }
@@ -67,7 +68,8 @@ class NewParticipationViewModel(
                             "${person.firstname} ${person.name}"
                         } else if (person?.firstname != null) {
                             person.firstname
-                        } else ""
+                        } else "",
+                        isLastInput = isLastParticipation
                     )
                 }
             }.launchIn(viewModelScope)

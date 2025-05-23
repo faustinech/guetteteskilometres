@@ -48,11 +48,12 @@ fun Navigation(
         participations(
             navigations = ParticipationsNavigations(
                 navigateUp = navController::popBackStack,
-                navigateToParticipation = { idEvent, idParticipation ->
+                navigateToParticipation = { idEvent, idParticipation, isLastParticipation ->
                     navController.navigate(
                         NewParticipation(
                             idEvent = idEvent,
-                            idParticipation = idParticipation ?: -1
+                            idParticipation = idParticipation ?: -1,
+                            isLastParticipation = isLastParticipation
                         )
                     )
                 }

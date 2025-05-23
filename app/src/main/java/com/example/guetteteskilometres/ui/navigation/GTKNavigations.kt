@@ -17,7 +17,8 @@ data class Participations(
 @Serializable
 data class NewParticipation(
     val idEvent: Long,
-    val idParticipation: Long
+    val idParticipation: Long,
+    val isLastParticipation: Boolean
 )
 
 @Serializable

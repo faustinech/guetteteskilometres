@@ -14,7 +14,8 @@ data class NewParticipationState(
     val idPersonErrorMessage: Int?,
     val idStartErrorMessage: Int?,
     val idEndErrorMessage: Int?,
-    val dialog: Dialog
+    val dialog: Dialog,
+    val isLastInput: Boolean
 )
 
 sealed interface Dialog {
