@@ -38,7 +38,8 @@ class NewParticipationViewModel(
             idEndErrorMessage = null,
             dialog = Dialog.None,
             libellePerson = "",
-            isLastInput = false
+            isLastInput = false,
+            startCanBeModify = true
         )
     )
     val state: StateFlow<NewParticipationState> = _state
@@ -69,7 +70,8 @@ class NewParticipationViewModel(
                         } else if (person?.firstname != null) {
                             person.firstname
                         } else "",
-                        isLastInput = isLastParticipation
+                        isLastInput = isLastParticipation,
+                        startCanBeModify = startMeters == null
                     )
                 }
             }.launchIn(viewModelScope)
