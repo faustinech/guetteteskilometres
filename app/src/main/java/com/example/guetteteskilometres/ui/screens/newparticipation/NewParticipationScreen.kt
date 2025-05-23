@@ -91,7 +91,9 @@ fun NewParticipationScreen(
             },
             onDeleteDismissClicked = viewModel::dialogDismiss,
             onDeleteParticipationClicked = viewModel::requestDelete,
-            onDeleteConfirmationClicked = viewModel::delete
+            onDeleteConfirmationClicked = viewModel::delete,
+            onClearEndMetersClicked = viewModel::clearStart,
+            onClearStartMetersClicked = viewModel::clearEnd
         )
     )
 
@@ -292,7 +294,8 @@ private fun ScreenBody(
                 idErrorMessage = state.idStartErrorMessage,
                 onValueChange = interactions.onStartMetersChanged,
                 keyboardType = KeyboardType.Number,
-                isReadOnly = !state.isLastInput
+                isReadOnly = !state.isLastInput,
+                onClearFilterClicked = interactions.onClearStartMetersClicked
             )
             CustomField(
                 idLabel = R.string.label_end_kilometres,
@@ -300,7 +303,8 @@ private fun ScreenBody(
                 idErrorMessage = state.idEndErrorMessage,
                 onValueChange = interactions.onEndMetersChanged,
                 keyboardType = KeyboardType.Number,
-                isReadOnly = !state.isLastInput
+                isReadOnly = !state.isLastInput,
+                onClearFilterClicked = interactions.onClearEndMetersClicked
             )
         }
     }
@@ -330,7 +334,7 @@ private fun NewParticipationScreenPreview() {
                 isLastInput = false
             ),
             interactions = NewParticipationInteractions(
-                { }, { }, { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }

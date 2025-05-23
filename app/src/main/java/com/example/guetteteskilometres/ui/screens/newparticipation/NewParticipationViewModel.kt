@@ -79,7 +79,10 @@ class NewParticipationViewModel(
     fun updateStartMeters(meters: String) {
         try {
             _state.update {
-                it.copy(startMeters = if (meters.isEmpty()) 0 else meters.toInt())
+                it.copy(
+                    startMeters = if (meters.isEmpty()) 0 else meters.toInt(),
+                    idEndErrorMessage = null
+                )
             }
         } catch (e: NumberFormatException) {
             _state.update {
@@ -91,7 +94,10 @@ class NewParticipationViewModel(
     fun updateEndMeters(meters: String) {
         try {
             _state.update {
-                it.copy(endMeters = if (meters.isEmpty()) null else meters.toInt())
+                it.copy(
+                    endMeters = if (meters.isEmpty()) null else meters.toInt(),
+                    idEndErrorMessage = null
+                )
             }
         } catch (e: NumberFormatException) {
             _state.update {
@@ -148,6 +154,24 @@ class NewParticipationViewModel(
                 participationRepository.removeParticipation(id)
             }
             _events.emit(NewParticipationEvents.NavigateUp)
+        }
+    }
+
+    fun clearStart() {
+        _state.update {
+            it.copy(
+                startMeters = null,
+                idEndErrorMessage = null
+            )
+        }
+    }
+
+    fun clearEnd() {
+        _state.update {
+            it.copy(
+                endMeters = null,
+                idEndErrorMessage = null
+            )
         }
     }
 

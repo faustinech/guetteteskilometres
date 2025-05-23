@@ -11,5 +11,7 @@ data class NewParticipationInteractions(
     val onBackClicked: () -> Unit,
     val onDeleteParticipationClicked: () -> Unit,
     val onDeleteConfirmationClicked: () -> Unit,
-    val onDeleteDismissClicked: () -> Unit
+    val onDeleteDismissClicked: () -> Unit,
+    val onClearStartMetersClicked: () -> Unit,
+    val onClearEndMetersClicked: () -> Unit
 )
