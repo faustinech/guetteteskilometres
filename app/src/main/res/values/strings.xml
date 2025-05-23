@@ -27,6 +27,7 @@
     <string name="label_filter">Filtrer</string>
     <string name="label_in_progress">En cours</string>
     <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
+    <string name="text_no_participations">Il n\'y a pas de participation avec ce filtre.</string>
 
     <string name="label_firstname">Prénom</string>
     <string name="label_name">Nom</string>

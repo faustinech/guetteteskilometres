@@ -20,9 +20,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.time.LocalDate
 import java.util.Calendar
-import java.util.Date
 
 
 class ParticipationsViewModel(

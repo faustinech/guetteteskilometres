@@ -56,12 +56,18 @@ class NewParticipationViewModel(
             val startMeters = participation?.startMeters ?: participationRepository.getLastParticipation(idEvent)?.endMeters
             personRepository.getPersons(idEvent).onEach { persons ->
                 _state.update {
+                    val person = it.person ?: participation?.person
                     it.copy(
-                        person = it.person ?: participation?.person,
+                        person = person,
                         event = participation?.event ?: eventRepository.getEvent(idEvent),
                         persons = persons.toImmutableList(),
                         startMeters = startMeters,
-                        endMeters = participation?.endMeters
+                        endMeters = participation?.endMeters,
+                        libellePerson = if (person?.name != null) {
+                            "${person.firstname} ${person.name}"
+                        } else if (person?.firstname != null) {
+                            person.firstname
+                        } else ""
                     )
                 }
             }.launchIn(viewModelScope)
