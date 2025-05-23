@@ -27,14 +27,17 @@
     <string name="label_filter">Filtrer</string>
     <string name="label_in_progress">En cours</string>
     <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
-    <string name="text_no_participations">Il n\'y a pas de participation avec ce filtre.</string>
 
     <string name="label_firstname">Prénom</string>
     <string name="label_name">Nom</string>
 
     <string name="common_yes">Oui</string>
     <string name="common_no">Non</string>
+    <string name="common_ok">OK</string>
     <string name="message_confirmation_cloture">Confirmez-vous la clôture de cet événement ?</string>
     <string name="title_confirmation">Confirmation</string>
     <string name="message_confirmation_suppression_event">Confirmez-vous la suppression de l\'événement %s ?</string>
+    <string name="title_information">Information</string>
+    <string name="message_wrong_save">Une erreur est survenue lors de la sauvegarde.</string>
+    <string name="message_correct_save">Sauvegarde faite.</string>
 </resources>

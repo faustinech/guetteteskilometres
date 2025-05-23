@@ -4,4 +4,5 @@ plugins {
     alias(libs.plugins.application) apply false
     alias(libs.plugins.android) apply false
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }

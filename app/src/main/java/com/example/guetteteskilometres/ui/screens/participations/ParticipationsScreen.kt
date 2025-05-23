@@ -11,14 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,7 +76,8 @@ fun ParticipationsScreen(
             onClotureEventClicked = viewModel::closeEvent,
             onFilterChanged = viewModel::updateFilter,
             onConfirmClotureClicked = viewModel::confirmClotureEvent,
-            onDismissClotureClicked = viewModel::dismissDialog
+            onDismissDialogClicked = viewModel::dismissDialog,
+            onSaveClicked = viewModel::saveData
         )
     )
 
@@ -104,16 +108,29 @@ private fun ScreenBody(
                 modifier = Modifier.padding(bottom = 5.dp),
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Outlined.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = null,
                         tint = light,
                         modifier = Modifier
                             .clickable { interactions.onBackClicked() }
                             .padding(horizontal = 5.dp)
                     )
+                },
+                actions = {
+                    if (state.participations.isNotEmpty()) {
+                        IconButton(
+                            onClick = interactions.onSaveClicked
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
             )
-        },
+        } ,
         floatingActionButton = {
             if (state.event?.isDone != true) {
                 Row(
@@ -152,19 +169,49 @@ private fun ScreenBody(
                 text = {
                     Text(text = stringResource(id = R.string.message_confirmation_cloture))
                 },
-                onDismissRequest = interactions.onDismissClotureClicked,
+                onDismissRequest = interactions.onDismissDialogClicked,
                 confirmButton = {
                     Button(onClick = interactions.onConfirmClotureClicked) {
                         Text(text = stringResource(id = R.string.common_yes))
                     }
                 },
                 dismissButton = {
-                    Button(onClick = interactions.onDismissClotureClicked) {
+                    Button(onClick = interactions.onDismissDialogClicked) {
                         Text(text = stringResource(id = R.string.common_no))
                     }
                 }
             )
             Dialog.None -> { }
+            Dialog.ErrorSave -> AlertDialog(
+                title = {
+                    Text(text = stringResource(id = R.string.title_information))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.message_wrong_save))
+                },
+                onDismissRequest = interactions.onDismissDialogClicked,
+                confirmButton = { },
+                dismissButton = {
+                    Button(onClick = interactions.onDismissDialogClicked) {
+                        Text(text = stringResource(id = R.string.common_ok))
+                    }
+                }
+            )
+            Dialog.SucessSave -> AlertDialog(
+                title = {
+                    Text(text = stringResource(id = R.string.title_information))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.message_correct_save))
+                },
+                onDismissRequest = interactions.onDismissDialogClicked,
+                confirmButton = { },
+                dismissButton = {
+                    Button(onClick = interactions.onDismissDialogClicked) {
+                        Text(text = stringResource(id = R.string.common_ok))
+                    }
+                }
+            )
         }
 
         Column(
@@ -296,7 +343,7 @@ private fun HomePreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }
@@ -321,7 +368,7 @@ private fun NoParticipationPreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }
@@ -346,7 +393,7 @@ private fun ConfirmationPreview() {
                 dialog = Dialog.ConfirmCloture
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }, { }, { }
             )
         )
     }

@@ -7,5 +7,6 @@ data class ParticipationsInteractions(
     val onClotureEventClicked: () -> Unit,
     val onFilterChanged: (String) -> Unit,
     val onConfirmClotureClicked: () -> Unit,
-    val onDismissClotureClicked: () -> Unit
+    val onDismissDialogClicked: () -> Unit,
+    val onSaveClicked: () -> Unit
 )

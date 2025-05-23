@@ -1,5 +1,6 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
+import android.os.Environment
 import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Participation
 import com.example.guetteteskilometres.data.repository.EventRepository
@@ -16,6 +17,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.time.LocalDate
+import java.util.Calendar
+import java.util.Date
+
 
 class ParticipationsViewModel(
     val eventRepository: EventRepository,
@@ -86,5 +94,40 @@ class ParticipationsViewModel(
         _state.update {
             it.copy(dialog = Dialog.None)
         }
+    }
+
+    fun saveData() {
+        try {
+            val event = _state.value.event ?: return
+            val dir = Environment.getExternalStorageDirectory().path + File.separator + "Documents"
+            val file = File(
+                dir,
+                "${event.name.uppercase().replace(' ', '_')}_" +
+                        "${Calendar.getInstance().get(Calendar.YEAR)}_" +
+                        "${Calendar.getInstance().get(Calendar.MONTH + 1)}_" +
+                        "${Calendar.getInstance().get(Calendar.DAY_OF_MONTH)}.csv"
+            )
+            FileOutputStream(file).apply { writeCsv(allParticipations) }
+            _state.update {
+                it.copy(dialog = Dialog.SucessSave)
+            }
+        } catch (e: Exception) {
+            _state.update {
+                it.copy(dialog = Dialog.ErrorSave)
+            }
+        }
+
+    }
+
+    private fun OutputStream.writeCsv(participations: List<Participation>) {
+        val writer = bufferedWriter()
+        val columns = ParticipationColumns.entries.joinToString(separator = ",") { it.display }
+        writer.write(columns)
+        writer.newLine()
+        participations.forEach {
+            writer.write("${it.person.firstname}, ${it.person.name.orEmpty()}, ${it.startMeters}, ${it.endMeters}, ${it.totalMeters}")
+            writer.newLine()
+        }
+        writer.flush()
     }
 }

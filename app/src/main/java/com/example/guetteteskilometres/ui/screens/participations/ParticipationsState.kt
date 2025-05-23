@@ -14,4 +14,14 @@ data class ParticipationsState(
 sealed interface Dialog {
     data object None: Dialog
     data object ConfirmCloture: Dialog
+    data object SucessSave: Dialog
+    data object ErrorSave: Dialog
+}
+
+enum class ParticipationColumns(val display: String) {
+    PRENOM("Prénom"),
+    NOM("Nom"),
+    DEBUT("Début"),
+    FIN("Fin"),
+    TOTAL("Total")
 }
