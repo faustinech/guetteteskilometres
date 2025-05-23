@@ -12,5 +12,5 @@ interface ParticipationStorage {
 
     suspend fun removeParticipation(idParticipation: Long)
 
-    suspend fun getLastParticipation(idEvent: Long): Participation?
+    suspend fun getLastParticipation(idEvent: Long, idParticipation: Long?): Participation?
 }

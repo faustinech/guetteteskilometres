@@ -29,7 +29,9 @@ class RoomParticipationStorage(
         participationDao.removeParticipation(idParticipation)
     }
 
-    override suspend fun getLastParticipation(idEvent: Long): Participation? {
-        return participationDao.getLastParticipation(idEvent)?.toModel()
+    override suspend fun getLastParticipation(idEvent: Long, idParticipation: Long?): Participation? {
+        return if (idParticipation != null) {
+            participationDao.getLastParticipation(idEvent, idParticipation)?.toModel()
+        } else participationDao.getLastParticipation(idEvent)?.toModel()
     }
 }

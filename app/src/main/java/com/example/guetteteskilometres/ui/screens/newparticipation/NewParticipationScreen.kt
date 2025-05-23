@@ -294,7 +294,8 @@ private fun ScreenBody(
                 idErrorMessage = state.idStartErrorMessage,
                 onValueChange = interactions.onStartMetersChanged,
                 keyboardType = KeyboardType.Number,
-                isReadOnly = !state.isLastInput
+                isReadOnly = !state.isLastInput || !state.startCanBeModify,
+                onClearFilterClicked = interactions.onClearStartMetersClicked
             )
             CustomField(
                 idLabel = R.string.label_end_kilometres,
@@ -302,7 +303,8 @@ private fun ScreenBody(
                 idErrorMessage = state.idEndErrorMessage,
                 onValueChange = interactions.onEndMetersChanged,
                 keyboardType = KeyboardType.Number,
-                isReadOnly = !state.isLastInput
+                isReadOnly = !state.isLastInput,
+                onClearFilterClicked = interactions.onClearEndMetersClicked
             )
         }
     }

@@ -30,4 +30,7 @@ interface ParticipationDao {
 
     @Query("select * from participation where id_event = :idEvent order by id desc limit 1")
     suspend fun getLastParticipation(idEvent: Long): ParticipationWithReferencesEntity?
+
+    @Query("select * from participation where id_event = :idEvent and id != :idParticipation order by id desc limit 1")
+    suspend fun getLastParticipation(idEvent: Long, idParticipation: Long): ParticipationWithReferencesEntity?
 }

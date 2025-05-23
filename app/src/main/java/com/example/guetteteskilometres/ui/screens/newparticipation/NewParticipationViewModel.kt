@@ -55,7 +55,8 @@ class NewParticipationViewModel(
         _idParticipation = idParticipation
         idEvent?.let {
             val participation = idParticipation?.let { id -> participationRepository.getParticipation(id) }
-            val startMeters = participation?.startMeters ?: participationRepository.getLastParticipation(idEvent)?.endMeters
+            val lastParticipation = participationRepository.getLastParticipation(idEvent, idParticipation)
+            val startMeters = participation?.startMeters ?: lastParticipation?.endMeters
             personRepository.getPersons(idEvent).onEach { persons ->
                 _state.update {
                     val person = it.person ?: participation?.person
@@ -71,7 +72,7 @@ class NewParticipationViewModel(
                             person.firstname
                         } else "",
                         isLastInput = isLastParticipation,
-                        startCanBeModify = startMeters == null
+                        startCanBeModify = lastParticipation == null
                     )
                 }
             }.launchIn(viewModelScope)

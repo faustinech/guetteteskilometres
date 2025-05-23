@@ -47,9 +47,9 @@ class ParticipationRepository(
         }
     }
 
-    suspend fun getLastParticipation(idEvent: Long): Participation? {
+    suspend fun getLastParticipation(idEvent: Long, idParticipation: Long?): Participation? {
         return withContext(Dispatchers.IO) {
-            storage.getLastParticipation(idEvent)
+            storage.getLastParticipation(idEvent, idParticipation)
         }
     }
 }
