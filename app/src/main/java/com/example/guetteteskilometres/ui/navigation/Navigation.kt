@@ -1,5 +1,7 @@
 package com.example.guetteteskilometres.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -16,6 +18,7 @@ import com.example.guetteteskilometres.ui.screens.participations.ParticipationsN
 import com.example.guetteteskilometres.ui.screens.participations.participations
 import newEvent
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(
     navController: NavHostController,

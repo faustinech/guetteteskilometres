@@ -1,5 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -8,6 +10,7 @@ import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.ui.navigation.Participations
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.participations(
     navigations: ParticipationsNavigations,
     eventRepository: EventRepository,

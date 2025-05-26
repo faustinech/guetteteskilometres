@@ -19,7 +19,7 @@ interface ParticipationDao {
     @Query("delete from participation where id = :id")
     suspend fun removeParticipation(id: Long)
 
-    @Query("select * from participation where id_event = :idEvent")
+    @Query("select * from participation where id_event = :idEvent order by id desc")
     fun getEventParticipations(idEvent: Long): Flow<List<ParticipationWithReferencesEntity>>
 
     @Query("select * from participation where id_event = :idEvent and id_person = :idPerson")

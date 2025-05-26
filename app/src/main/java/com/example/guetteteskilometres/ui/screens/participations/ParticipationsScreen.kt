@@ -1,5 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
@@ -53,6 +54,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ParticipationsScreen(
     navigations: ParticipationsNavigations,
@@ -117,7 +119,7 @@ private fun ScreenBody(
                     )
                 },
                 actions = {
-                    if (state.participations.isNotEmpty()) {
+                    if (state.participations.isNotEmpty() && state.event?.isDone == true) {
                         IconButton(
                             onClick = interactions.onSaveClicked
                         ) {
@@ -226,7 +228,7 @@ private fun ScreenBody(
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
                     val totalKilometers =
-                        state.participations.sumOf {
+                        state.participations.filter { it.endMeters != null }.sumOf {
                             abs(
                                 it.startMeters - (it.endMeters ?: 0)
                             )

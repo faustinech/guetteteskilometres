@@ -18,10 +18,10 @@ sealed interface Dialog {
     data object ErrorSave: Dialog
 }
 
-enum class ParticipationColumns(val display: String) {
-    PRENOM("Prénom"),
-    NOM("Nom"),
-    DEBUT("Début"),
-    FIN("Fin"),
-    TOTAL("Total")
+enum class ParticipationColumns(val display: String, val inRecap: Boolean) {
+    PRENOM("Prénom", inRecap = true),
+    NOM("Nom", inRecap = true),
+    DEBUT("Début", inRecap = false),
+    FIN("Fin", inRecap = false),
+    TOTAL("Total", inRecap = true)
 }
