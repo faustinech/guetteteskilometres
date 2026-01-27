@@ -2,6 +2,7 @@ package com.example.guetteteskilometres.ui.screens.participants
 
 import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Person
+import com.example.guetteteskilometres.data.model.enums.ParticipantField
 import com.example.guetteteskilometres.data.model.enums.ParticipantFilter
 import com.example.guetteteskilometres.data.repository.PersonRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
@@ -64,5 +65,35 @@ class ParticipantsViewModel @Inject constructor(
                 persons = filteredPersons.toImmutableList()
             )
         }
+    }
+
+    fun updateField(type: ParticipantField, value: String?) {
+        _state.update { state ->
+            when (type) {
+                ParticipantField.Firstname -> state.copy(firstname = value)
+                ParticipantField.Name -> state.copy(name = value)
+                ParticipantField.Email -> state.copy(email = value)
+            }
+        }
+    }
+
+    fun updateActive(active: Boolean) {
+        _state.update { state ->
+            state.copy(active = active)
+        }
+    }
+
+    fun dismissDialog() {
+        _state.update { state ->
+            state.copy(isDialogVisible = false)
+        }
+    }
+
+    fun updateDialog(idPerson: Long?) {
+
+    }
+
+    fun validate() {
+
     }
 }

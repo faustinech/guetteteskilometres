@@ -8,6 +8,7 @@
     <string name="title_new_event">Créer événement</string>
     <string name="label_name_event">Nom de l\'événement</string>
     <string name="message_error_name_event">Veuillez saisir un nom valide</string>
+    <string name="message_error_firstname_missing">Le prénom est manquant</string>
 
     <string name="title_participations">Participations</string>
     <string name="title_new_participation">Nouvelle participation</string>
@@ -16,7 +17,6 @@
     <string name="message_valeur_incorrect">Valeur incorrecte</string>
     <string name="message_error_missing_person">Veuillez choisir un participant</string>
     <string name="message_error_missing_start_meters">Veuillez saisir les mètres de départ</string>
-    <string name="message_error_firstname_missing">Le prénom est manquant</string>
 
     <string name="label_name_person">Participant</string>
     <string name="label_start_kilometres">Début (mètres)</string>
@@ -29,10 +29,7 @@
     <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
     <string name="text_no_participations">Il n\'y a pas de participation avec ce filtre.</string>
 
-    <string name="label_firstname">Prénom</string>
-    <string name="label_name">Nom</string>
-
-    <string name="common_yes">Oui</string>
+     <string name="common_yes">Oui</string>
     <string name="common_no">Non</string>
     <string name="common_ok">OK</string>
     <string name="message_confirmation_cloture">Confirmez-vous la clôture de cet événement ?</string>
@@ -51,7 +48,20 @@
     <string name="label_participants">Participants</string>
 
     <string name="label_all">Tous</string>
-    <string name="label_active">Actifs</string>
-    <string name="label_inactive">Inactifs</string>
+    <string name="label_active">Actif</string>
+    <string name="label_active_plural">Actifs</string>
+    <string name="label_inactive">Inactif</string>
+    <string name="label_inactive_plural">Inactifs</string>
     <string name="no_participant">Il n\'existe pas de participant pour l\'instant. Veuillez en ajouter.</string>
+    <string name="title_create_participant">Créer un participant</string>
+    <string name="title_edit_participant">Modifier un participant</string>
+    <string name="label_firstname">Prénom</string>
+    <string name="label_name">Nom</string>
+    <string name="label_email">Email</string>
+    <string name="text_creation_ok">Création réalisée avec succès.\nVeuillez patienter.</string>
+    <string name="text_edit_ok">Modification réalisée avec succès.\nVeuillez patienter.</string>
+    <string name="message_error_missing_field">Un champ est manquant.</string>
+    <string name="message_error">Une erreur est survenue.\nVeuillez réessayer.</string>
+
+    <string name="button_valider">Valider</string>
 </resources>
