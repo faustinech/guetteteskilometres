@@ -23,3 +23,6 @@ data class NewParticipation(
 
 @Serializable
 data class NewPerson(val idEvent: Long)
+
+@Serializable
+data object Participants

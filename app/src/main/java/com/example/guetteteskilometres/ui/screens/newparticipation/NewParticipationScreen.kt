@@ -319,7 +319,8 @@ private fun NewParticipationScreenPreview() {
                     id = 1,
                     firstname = "Faustine",
                     name = null,
-                    idEvent = 1
+                    email = null,
+                    active = true
                 ),
                 event = null,
                 startMeters = 0,

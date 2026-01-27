@@ -322,14 +322,14 @@ private fun HomePreview() {
         val participations = persistentListOf(
             Participation(
                 id = 0,
-                person = Person(1, "Test", "Nom", 1),
+                person = Person(1, "Test", "Nom", null, true),
                 event = Event(1, "100", false, 1234, 12),
                 startMeters = 0,
                 endMeters = 1000
             ),
             Participation(
                 id = 1,
-                person = Person(1, "Luc", "Paul", 1),
+                person = Person(1, "Luc", "Paul", null, true),
                 event = Event(1, "100", false, 10000, 12),
                 startMeters = 1000,
                 endMeters = 3000

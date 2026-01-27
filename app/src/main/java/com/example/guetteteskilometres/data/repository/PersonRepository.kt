@@ -20,7 +20,8 @@ class PersonRepository(
                     id = 0,
                     name = name,
                     firstname = firstname,
-                    idEvent = idEvent
+                    email = null,
+                    active = true
                 )
             )
         }
@@ -30,5 +31,9 @@ class PersonRepository(
         return withContext(Dispatchers.IO) {
             storage.getPerson(idPerson)
         }
+    }
+
+    fun getAll(): Flow<List<Person>> {
+        return storage.getAll()
     }
 }

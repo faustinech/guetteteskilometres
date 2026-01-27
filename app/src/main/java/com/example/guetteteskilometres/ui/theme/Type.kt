@@ -54,5 +54,15 @@ val Typography = Typography(
         fontFamily = Lato,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = Lato,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = Lato,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
     )
 )

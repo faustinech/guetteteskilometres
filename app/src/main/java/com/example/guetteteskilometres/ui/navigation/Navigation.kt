@@ -14,6 +14,8 @@ import com.example.guetteteskilometres.ui.screens.newparticipation.NewParticipat
 import com.example.guetteteskilometres.ui.screens.newparticipation.newParticipation
 import com.example.guetteteskilometres.ui.screens.newperson.NewPersonNavigations
 import com.example.guetteteskilometres.ui.screens.newperson.newPerson
+import com.example.guetteteskilometres.ui.screens.participants.ParticipantsNavigations
+import com.example.guetteteskilometres.ui.screens.participants.participants
 import com.example.guetteteskilometres.ui.screens.participations.ParticipationsNavigations
 import com.example.guetteteskilometres.ui.screens.participations.participations
 import newEvent
@@ -40,10 +42,23 @@ fun Navigation(
                     // TODO FCH : revoir
                 },
                 navigateToUsers = {
-                    // TODO FCH : revoir
+                    navController.navigate(Participants)
                 }
             )
         )
+        participants(
+            navigations = ParticipantsNavigations(
+                navigateUp = navController::popBackStack,
+                navigateToNewPerson = {
+                    // TODO FCH : à remplir
+                },
+                navigateToPerson = {
+                    // TODO FCH : à remplir
+                }
+            ),
+            personRepository = appDependencies.personRepository
+        )
+
         newEvent(
             navigations = NewEventNavigations(
                 navigateUp = navController::popBackStack

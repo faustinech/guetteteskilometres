@@ -9,7 +9,7 @@ import com.example.guetteteskilometres.db.entity.EventEntity
 import com.example.guetteteskilometres.db.entity.ParticipationEntity
 import com.example.guetteteskilometres.db.entity.PersonEntity
 
-const val DATABASE_VERSION = 1
+const val DATABASE_VERSION = 2
 const val DATABASE_NAME = "GuetteTesKilometres.db"
 
 @Database(

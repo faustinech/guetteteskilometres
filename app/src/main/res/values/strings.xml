@@ -44,8 +44,14 @@
 
     <!-- STRINGS V2 -->
     <string name="title_home">Accueil</string>
+    <string name="title_participants">Participants</string>
 
     <string name="label_evenements">Événements</string>
     <string name="label_closed_evenements">Clôturés</string>
     <string name="label_participants">Participants</string>
+
+    <string name="label_all">Tous</string>
+    <string name="label_active">Actifs</string>
+    <string name="label_inactive">Inactifs</string>
+    <string name="no_participant">Il n\'existe pas de participant pour l\'instant. Veuillez en ajouter.</string>
 </resources>

@@ -7,12 +7,14 @@ fun PersonEntity.toModel() = Person(
     id = id,
     name = name,
     firstname = firstname,
-    idEvent = idEvent
+    email = email,
+    active = active
 )
 
 fun Person.toEntity() = PersonEntity(
     id = id,
     name = name,
     firstname = firstname,
-    idEvent = idEvent
+    email = email,
+    active = active
 )

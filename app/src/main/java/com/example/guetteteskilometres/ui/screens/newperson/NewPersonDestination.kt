@@ -20,7 +20,8 @@ fun NavGraphBuilder.newPerson(
         }
         NewPersonScreen(
             navigations = navigations,
-            viewModel = viewModel, idEvent = arguments.idEvent
+            viewModel = viewModel,
+            idEvent = arguments.idEvent
         )
     }
 }

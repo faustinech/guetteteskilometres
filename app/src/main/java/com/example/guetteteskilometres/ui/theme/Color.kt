@@ -20,3 +20,5 @@ val black = Color(0xFF121212)
 val white = Color(0xFFFAFAFA)
 val secondary = Color(0xFF607D8B)
 val grey = Color(0xFFE0E0E0)
+
+val green = Color(0xFF4CAF50)

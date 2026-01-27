@@ -6,13 +6,16 @@ import com.example.guetteteskilometres.db.dao.PersonDao
 import com.example.guetteteskilometres.db.mapping.toEntity
 import com.example.guetteteskilometres.db.mapping.toModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class RoomPersonStorage(
     private val personDao: PersonDao
 ): PersonStorage {
     override fun getPersons(idEvent: Long): Flow<List<Person>> {
-        return personDao.getEventPersons(idEvent).map { persons -> persons.map { it.toModel() } }
+        //return personDao.getEventPersons(idEvent).map { persons -> persons.map { it.toModel() } }
+        return flowOf(emptyList())
     }
 
     override suspend fun savePerson(person: Person): Long? {
@@ -21,5 +24,9 @@ class RoomPersonStorage(
 
     override suspend fun getPerson(idPerson: Long): Person? {
         return personDao.getPerson(idPerson)?.toModel()
+    }
+
+    override fun getAll(): Flow<List<Person>> {
+        return personDao.getAll().map { persons -> persons.map { it.toModel() } }
     }
 }
