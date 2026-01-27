@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.home
+package com.example.guetteteskilometres.ui.screens.events
 
 import com.example.guetteteskilometres.data.model.Event
 import kotlinx.collections.immutable.ImmutableList

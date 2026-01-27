@@ -1,62 +1,50 @@
 package com.example.guetteteskilometres.ui.screens.home
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.guetteteskilometres.R
-import com.example.guetteteskilometres.data.model.Event
-import com.example.guetteteskilometres.ui.components.CustomCard
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import com.example.guetteteskilometres.ui.theme.background
-import com.example.guetteteskilometres.ui.theme.dark
-import com.example.guetteteskilometres.ui.theme.done
-import com.example.guetteteskilometres.ui.theme.light
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun HomeScreen(
-    navigations: HomeNavigations,
-    viewModel: HomeViewModel
+    navigations: HomeNavigations
 ) {
-    val state by viewModel.state.collectAsState()
-
-    viewModel.initialize()
-
     ScreenBody(
-        state = state,
         interactions = HomeInteractions(
-            onEventClicked = { event -> navigations.navigateToEvent(event) },
-            onAddEventClicked = navigations.navigateToNewEvent,
-            onConfirmDialog = viewModel::confirmDeleteEvent,
-            onDismissDialog = viewModel::dismissDialog,
-            onEventLongClicked = viewModel::deleteEvent
+            onEventsClicked = navigations.navigateToEvents,
+            onClosedEventsClicked = navigations.navigateToClosedEvents,
+            onUsersClicked = navigations.navigateToUsers
         )
     )
 }
@@ -64,151 +52,116 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
-    state: HomeState,
     interactions: HomeInteractions
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.title_home)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = dark,
-                    titleContentColor = light
-                ),
-                modifier = Modifier.padding(bottom = 5.dp)
-            )
-        },
-        floatingActionButton = {
-           FloatingActionButton(
-               onClick = interactions.onAddEventClicked,
-               containerColor = dark
-           ) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = null
+            Column {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.title_home),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    modifier = Modifier.padding(bottom = 5.dp)
                 )
-           }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = 2.dp
+                )
+            }
         }
     ) { innerPadding ->
-        when (val dialog = state.dialog) {
-            is Dialog.ConfirmSuppression -> AlertDialog(
-                title = {
-                    Text(text = stringResource(id = R.string.title_confirmation))
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.message_confirmation_suppression_event, dialog.libelle))
-                },
-                onDismissRequest = interactions.onDismissDialog,
-                confirmButton = {
-                    Button(onClick = interactions.onConfirmDialog) {
-                        Text(text = stringResource(id = R.string.common_yes))
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = interactions.onDismissDialog) {
-                        Text(text = stringResource(id = R.string.common_no))
-                    }
-                }
-            )
-            Dialog.None -> { }
-        }
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1), // Possibilité de changer plus tard si plus de menus
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (state.events.isNotEmpty()) {
-                items(state.events) { event ->
-                    event.Compose(
-                        onEventClicked = interactions.onEventClicked,
-                        onEventLongClicked = interactions.onEventLongClicked
-                    )
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.label_no_event),
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
-                }
+            item {
+                HomeCard(
+                    title = stringResource(R.string.label_evenements),
+                    icon = Icons.Outlined.Event,
+                    onClick = { interactions.onEventsClicked() }
+                )
+            }
+            item {
+                HomeCard(
+                    title = stringResource(R.string.label_closed_evenements),
+                    icon = Icons.Outlined.CheckCircle,
+                    onClick = { interactions.onClosedEventsClicked() }
+                )
+            }
+            item {
+                HomeCard(
+                    title = stringResource(R.string.label_participants),
+                    icon = Icons.Outlined.People,
+                    onClick = { interactions.onUsersClicked() }
+                )
             }
         }
     }
 }
 
 @Composable
-fun Event.Compose(
-    onEventClicked: (Event) -> Unit,
-    onEventLongClicked: (Event) -> Unit
+fun HomeCard(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit
 ) {
-    val nbParticipants = nbParticipants ?: 0
-    val kilometers = totalMeters?.div(1000f) ?: 0f
-    CustomCard(
-        title = name,
-        leftText = stringResource(id = R.string.text_nb_participants, nbParticipants),
-        rightText = if (kilometers == 0f) null else stringResource(id = R.string.text_nb_kilometres, kilometers),
-        backgroundColor = if (isDone) done else light,
-        modifier = Modifier.padding(horizontal = 10.dp),
-        onClick = { onEventClicked(this) },
-        onLongClick = { onEventLongClicked(this) }
-    )
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(bottom = 15.dp)
+                    .size(40.dp)
+            )
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HomePreview() {
     GuetteTesKilometresTheme {
-        val events = persistentListOf(
-            Event(
-                id = 0,
-                name = "100 kilomètres",
-                isDone = true,
-                totalMeters = 100000,
-                nbParticipants = 28
-            ),
-            Event(
-                id = 1,
-                name = "24 heures",
-                isDone = false,
-                totalMeters = 0,
-                nbParticipants = 0
-            )
-        )
         ScreenBody(
-            state = HomeState(
-                events = events,
-                dialog = Dialog.ConfirmSuppression(libelle = "test"),
-                idEventToDelete = null
-            ),
             interactions = HomeInteractions(
-                { }, { }, { }, { }, { }
-            )
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeNoEventPreview() {
-    GuetteTesKilometresTheme {
-        val events = persistentListOf<Event>()
-        ScreenBody(
-            state = HomeState(
-                events = events,
-                dialog = Dialog.None,
-                idEventToDelete = null
-            ),
-            interactions = HomeInteractions(
-                { }, { }, { }, { }, { }
+                { }, { }, { }
             )
         )
     }

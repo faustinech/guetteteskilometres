@@ -1,6 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
 import android.os.Build
+import androidx.activity.SystemBarStyle.Companion.dark
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,10 +46,10 @@ import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.ui.components.CustomCard
 import com.example.guetteteskilometres.ui.components.CustomField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import com.example.guetteteskilometres.ui.theme.dark
-import com.example.guetteteskilometres.ui.theme.done
-import com.example.guetteteskilometres.ui.theme.light
-import com.example.guetteteskilometres.ui.theme.valid
+import com.example.guetteteskilometres.ui.theme.black
+import com.example.guetteteskilometres.ui.theme.secondary
+import com.example.guetteteskilometres.ui.theme.secondaryRed
+import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -104,15 +105,15 @@ private fun ScreenBody(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.title_participations)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = dark,
-                    titleContentColor = light
+                    containerColor = black,
+                    titleContentColor = white
                 ),
                 modifier = Modifier.padding(bottom = 5.dp),
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = null,
-                        tint = light,
+                        tint = white,
                         modifier = Modifier
                             .clickable { interactions.onBackClicked() }
                             .padding(horizontal = 5.dp)
@@ -142,7 +143,7 @@ private fun ScreenBody(
                 ) {
                     FloatingActionButton(
                         onClick = interactions.onCreationParticipationClicked,
-                        containerColor = valid
+                        containerColor = secondary
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Add,
@@ -151,7 +152,7 @@ private fun ScreenBody(
                     }
                     FloatingActionButton(
                         onClick = interactions.onClotureEventClicked,
-                        containerColor = done,
+                        containerColor = secondaryRed,
                         modifier = Modifier.padding(start = 10.dp)
                     ) {
                         Icon(
@@ -308,7 +309,7 @@ fun Participation.Compose(
             stringResource(id = R.string.text_nb_metres, total)
         } else stringResource(id = R.string.label_in_progress),
         rightText = null,
-        backgroundColor = light,
+        backgroundColor = white,
         onClick = { interactions.onParticipationClicked(id, isLastParticipation) },
         onLongClick = { }
     )

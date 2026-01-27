@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.ui.components.CustomField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import com.example.guetteteskilometres.ui.theme.dark
-import com.example.guetteteskilometres.ui.theme.light
-import com.example.guetteteskilometres.ui.theme.valid
+import com.example.guetteteskilometres.ui.theme.black
+import com.example.guetteteskilometres.ui.theme.secondary
+import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -68,15 +68,15 @@ private fun ScreenBody(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.title_new_event)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = dark,
-                    titleContentColor = light
+                    containerColor = black,
+                    titleContentColor = white
                 ),
                 modifier = Modifier.padding(bottom = 5.dp),
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBack,
                         contentDescription = null,
-                        tint = light,
+                        tint = white,
                         modifier = Modifier
                             .clickable { interactions.onBackClicked() }
                             .padding(horizontal = 5.dp)
@@ -87,7 +87,7 @@ private fun ScreenBody(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = interactions.onValidateClicked,
-                containerColor = valid
+                containerColor = secondary
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Check,

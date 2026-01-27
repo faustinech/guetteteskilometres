@@ -32,15 +32,17 @@ fun Navigation(
     ) {
         home(
             navigations = HomeNavigations(
-                navigateToEvent = { event ->
-                    navController.navigate(Participations(event.id))
+                navigateToEvents = {
+                    // TODO FCH : revoir
+                    // navController.navigate(Participations(event.id))
                 },
-                navigateToNewEvent = {
-                    navController.navigate(NewEvent)
+                navigateToClosedEvents = {
+                    // TODO FCH : revoir
+                },
+                navigateToUsers = {
+                    // TODO FCH : revoir
                 }
-            ),
-            eventRepository = appDependencies.eventRepository,
-            participationRepository = appDependencies.participationRepository
+            )
         )
         newEvent(
             navigations = NewEventNavigations(

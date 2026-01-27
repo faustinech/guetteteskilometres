@@ -46,11 +46,10 @@ import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.ui.components.CustomField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import com.example.guetteteskilometres.ui.theme.background
-import com.example.guetteteskilometres.ui.theme.dark
-import com.example.guetteteskilometres.ui.theme.done
-import com.example.guetteteskilometres.ui.theme.light
-import com.example.guetteteskilometres.ui.theme.valid
+import com.example.guetteteskilometres.ui.theme.black
+import com.example.guetteteskilometres.ui.theme.secondary
+import com.example.guetteteskilometres.ui.theme.secondaryRed
+import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -118,15 +117,15 @@ private fun ScreenBody(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.title_new_participation)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = dark,
-                    titleContentColor = light
+                    containerColor = black,
+                    titleContentColor = white
                 ),
                 modifier = Modifier.padding(bottom = 5.dp),
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBack,
                         contentDescription = null,
-                        tint = light,
+                        tint = white,
                         modifier = Modifier
                             .clickable { interactions.onBackClicked() }
                             .padding(horizontal = 5.dp)
@@ -143,7 +142,7 @@ private fun ScreenBody(
                 if (state.isLastInput) {
                     FloatingActionButton(
                         onClick = interactions.onDeleteParticipationClicked,
-                        containerColor = done
+                        containerColor = secondaryRed
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,
@@ -153,7 +152,7 @@ private fun ScreenBody(
                 }
                 FloatingActionButton(
                     onClick = interactions.onValidationClicked,
-                    containerColor = valid,
+                    containerColor = secondary,
                     modifier = Modifier.padding(start = 10.dp)
                 ) {
                     Icon(
@@ -262,7 +261,7 @@ private fun ScreenBody(
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
                             .exposedDropdownSize()
-                            .background(background)
+                            .background(white)
                             .padding(horizontal = 10.dp)
                     ) {
                         for (person in state.persons) {

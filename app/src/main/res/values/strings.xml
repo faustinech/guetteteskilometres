@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Guette tes kilomètres</string>
+    <string name="app_short_name">GTK</string>
     <string name="text_nb_participants">%s participants</string>
     <string name="text_nb_kilometres">%s kms</string>
-    <string name="title_home">Accueil</string>
     <string name="label_no_event">Il n\'y a pas d\'évément pour l\'instant. Veuillez en ajouter un.</string>
 
     <string name="title_new_event">Créer événement</string>
@@ -41,4 +41,11 @@
     <string name="title_information">Information</string>
     <string name="message_wrong_save">Une erreur est survenue lors de la sauvegarde.</string>
     <string name="message_correct_save">Sauvegarde faite.</string>
+
+    <!-- STRINGS V2 -->
+    <string name="title_home">Accueil</string>
+
+    <string name="label_evenements">Événements</string>
+    <string name="label_closed_evenements">Clôturés</string>
+    <string name="label_participants">Participants</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.home
+package com.example.guetteteskilometres.ui.screens.events
 
 data class HomeNavigations(
     val navigateToEvents: () -> Unit,

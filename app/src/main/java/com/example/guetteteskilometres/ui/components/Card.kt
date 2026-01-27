@@ -1,5 +1,6 @@
 package com.example.guetteteskilometres.ui.components
 
+import androidx.activity.SystemBarStyle.Companion.light
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
 import com.example.guetteteskilometres.ui.theme.black
-import com.example.guetteteskilometres.ui.theme.light
+import com.example.guetteteskilometres.ui.theme.white
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -94,7 +95,7 @@ private fun HomeCardPreview() {
             title = "100 kilomètres",
             leftText = "12 participants",
             rightText = "100 kms",
-            backgroundColor = light,
+            backgroundColor = white,
             onClick = { },
             onLongClick = { }
         )
@@ -109,7 +110,7 @@ private fun ParticipationCardPreview() {
             title = "Faustine",
             leftText = "1234 m",
             rightText = "",
-            backgroundColor = light,
+            backgroundColor = white,
             onClick = { },
             onLongClick = { }
         )

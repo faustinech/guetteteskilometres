@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.hilt.navigation)
     implementation(libs.serialization)
     implementation(libs.serialization.json)
+    implementation(libs.material.icons.extended)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
