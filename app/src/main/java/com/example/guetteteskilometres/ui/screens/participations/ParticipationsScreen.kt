@@ -120,7 +120,7 @@ private fun ScreenBody(
                     )
                 },
                 actions = {
-                    if (state.participations.isNotEmpty() && state.event?.isDone == true) {
+                    if (state.participations.isNotEmpty() && state.event?.active == false) {
                         IconButton(
                             onClick = interactions.onSaveClicked
                         ) {
@@ -135,7 +135,7 @@ private fun ScreenBody(
             )
         } ,
         floatingActionButton = {
-            if (state.event?.isDone != true) {
+            if (state.event?.active != false) {
                 Row(
                     modifier = Modifier
                         .padding(5.dp),
@@ -323,14 +323,14 @@ private fun HomePreview() {
             Participation(
                 id = 0,
                 person = Person(1, "Test", "Nom", null, true),
-                event = Event(1, "100", false, 1234, 12),
+                event = Event(1, "100", 0, true, false, 1234, 12),
                 startMeters = 0,
                 endMeters = 1000
             ),
             Participation(
                 id = 1,
                 person = Person(1, "Luc", "Paul", null, true),
-                event = Event(1, "100", false, 10000, 12),
+                event = Event(1, "100", 100, true, false, 10000, 12),
                 startMeters = 1000,
                 endMeters = 3000
             )
@@ -340,8 +340,10 @@ private fun HomePreview() {
                 event = Event(
                     id = 1,
                     name = "100 kilomètres",
+                    startMeters = 0,
+                    ascending = true,
                     totalMeters = 0,
-                    isDone = false,
+                    active = false,
                     nbParticipants = null
                 ),
                 participations = participations,
@@ -366,7 +368,9 @@ private fun NoParticipationPreview() {
                     id = 1,
                     name = "100 kilomètres",
                     totalMeters = 0,
-                    isDone = false,
+                    ascending = true,
+                    startMeters = 0,
+                    active = false,
                     nbParticipants = null
                 ),
                 participations = participations,
@@ -391,7 +395,9 @@ private fun ConfirmationPreview() {
                     id = 1,
                     name = "100 kilomètres",
                     totalMeters = 0,
-                    isDone = false,
+                    ascending = true,
+                    startMeters = 0,
+                    active = false,
                     nbParticipants = null
                 ),
                 participations = participations,

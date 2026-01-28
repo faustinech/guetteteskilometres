@@ -8,15 +8,19 @@ import com.example.guetteteskilometres.db.entity.embedded.EventWithReferencesEnt
 fun EventEntity.toModel() = Event(
     id = id,
     name = name,
+    startMeters = startMeters,
+    active = active,
+    ascending = ascending,
     totalMeters = null,
-    isDone = isDone,
     nbParticipants = null
 )
 
 fun EventWithReferencesEntity.toModel() = Event(
     id = event.id,
     name = event.name,
-    isDone = event.isDone,
+    startMeters = event.startMeters,
+    active = event.active,
+    ascending = event.ascending,
     participations = participations.map { it.toModel() },
     nbParticipants = null,
     totalMeters = null
@@ -25,5 +29,7 @@ fun EventWithReferencesEntity.toModel() = Event(
 fun Event.toEntity() = EventEntity(
     id = id,
     name = name,
-    isDone = isDone
+    startMeters = startMeters,
+    active = active,
+    ascending = ascending
 )

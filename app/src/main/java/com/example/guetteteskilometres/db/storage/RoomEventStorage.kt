@@ -13,12 +13,12 @@ class RoomEventStorage(
     private val eventDao: EventDao
 ): EventStorage {
 
-    override fun getEvents(): Flow<List<Event>> {
-        return eventDao.getEvents().map { events -> events.map { it.toModel() } }
+    override fun getEvents(active: Boolean): Flow<List<Event>> {
+        return eventDao.getEvents(active).map { events -> events.map { it.toModel() } }
     }
 
-    override suspend fun saveEvent(event: Event) {
-        eventDao.insertEvent(event.toEntity())
+    override suspend fun saveEvent(event: Event): Long? {
+        return eventDao.insertEvent(event.toEntity())
     }
 
     override suspend fun getEvent(id: Long): Event? {

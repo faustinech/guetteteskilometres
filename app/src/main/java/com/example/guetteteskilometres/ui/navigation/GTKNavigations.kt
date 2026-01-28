@@ -10,6 +10,9 @@ data object Home
 data object NewEvent
 
 @Serializable
+data object Events
+
+@Serializable
 data class Participations(
     val idEvent: Long
 )

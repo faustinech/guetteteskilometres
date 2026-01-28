@@ -1,6 +1,5 @@
 package com.example.guetteteskilometres.ui.screens.participants
 
-import com.example.guetteteskilometres.data.model.enums.ParticipantField
 import com.example.guetteteskilometres.data.model.enums.ParticipantFilter
 
 data class ParticipantsInteractions(

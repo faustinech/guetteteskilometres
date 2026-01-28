@@ -9,21 +9,27 @@ import kotlinx.coroutines.withContext
 class EventRepository(
     private val storage: EventStorage
 ) {
-    fun getEvents(): Flow<List<Event>> {
-        return storage.getEvents()
+    fun getEvents(active: Boolean = true): Flow<List<Event>> {
+        return storage.getEvents(active)
     }
 
-    suspend fun saveEvent(name: String) =
+    suspend fun saveEvent(id: Long?, name: String, startMeters: String, active: Boolean?, ascending: Boolean?): Long? =
         withContext(Dispatchers.IO) {
-            storage.saveEvent(
-                Event(
-                    id = 0,
-                    name = name,
-                    isDone = false,
-                    totalMeters = 0,
-                    nbParticipants = null
+            try {
+                storage.saveEvent(
+                    Event(
+                        id = id ?: 0L,
+                        name = name,
+                        startMeters = startMeters.toInt(),
+                        ascending = ascending ?: true,
+                        active = active ?: true,
+                        totalMeters = 0,
+                        nbParticipants = null
+                    )
                 )
-            )
+            } catch (_: NumberFormatException) {
+                null
+            }
         }
 
     suspend fun getEvent(id: Long): Event? {

@@ -7,17 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.guetteteskilometres.di.AppDependencies
+import com.example.guetteteskilometres.ui.screens.events.EventsNavigations
+import com.example.guetteteskilometres.ui.screens.events.events
 import com.example.guetteteskilometres.ui.screens.home.HomeNavigations
 import com.example.guetteteskilometres.ui.screens.home.home
-import com.example.guetteteskilometres.ui.screens.newevent.NewEventNavigations
 import com.example.guetteteskilometres.ui.screens.newparticipation.NewParticipationNavigations
 import com.example.guetteteskilometres.ui.screens.newparticipation.newParticipation
 import com.example.guetteteskilometres.ui.screens.participants.ParticipantsNavigations
 import com.example.guetteteskilometres.ui.screens.participants.participants
 import com.example.guetteteskilometres.ui.screens.participations.ParticipationsNavigations
 import com.example.guetteteskilometres.ui.screens.participations.participations
-import newEvent
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(
@@ -33,8 +32,7 @@ fun Navigation(
         home(
             navigations = HomeNavigations(
                 navigateToEvents = {
-                    // TODO FCH : revoir
-                    // navController.navigate(Participations(event.id))
+                    navController.navigate(Events)
                 },
                 navigateToClosedEvents = {
                     // TODO FCH : revoir
@@ -50,13 +48,17 @@ fun Navigation(
             ),
             personRepository = appDependencies.personRepository
         )
-
-        newEvent(
-            navigations = NewEventNavigations(
-                navigateUp = navController::popBackStack
+        events(
+            navigations = EventsNavigations(
+                navigateUp = navController::popBackStack,
+                navigateToEvent = {
+                    // TODO FCH : à remplir
+                }
             ),
-            eventRepository = appDependencies.eventRepository
+            eventRepository = appDependencies.eventRepository,
+            participationRepository = appDependencies.participationRepository
         )
+
         participations(
             navigations = ParticipationsNavigations(
                 navigateUp = navController::popBackStack,

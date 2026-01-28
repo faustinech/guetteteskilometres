@@ -5,21 +5,21 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
-import com.example.guetteteskilometres.ui.navigation.Home
+import com.example.guetteteskilometres.ui.navigation.Events
 
-fun NavGraphBuilder.home(
-    navigations: HomeNavigations,
+fun NavGraphBuilder.events(
+    navigations: EventsNavigations,
     eventRepository: EventRepository,
     participationRepository: ParticipationRepository
 ) {
-    composable<Home> {
+    composable<Events> {
         val viewModel = viewModel {
-            HomeViewModel(
+            EventsViewModel(
                 eventRepository = eventRepository,
                 participationRepository = participationRepository
             )
         }
-        HomeScreen(
+        EventsScreen(
             navigations = navigations,
             viewModel = viewModel
         )

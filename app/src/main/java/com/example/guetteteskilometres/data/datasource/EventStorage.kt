@@ -4,9 +4,9 @@ import com.example.guetteteskilometres.data.model.Event
 import kotlinx.coroutines.flow.Flow
 
 interface EventStorage {
-    fun getEvents(): Flow<List<Event>>
+    fun getEvents(active: Boolean): Flow<List<Event>>
 
-    suspend fun saveEvent(event: Event)
+    suspend fun saveEvent(event: Event): Long?
 
     suspend fun getEvent(id: Long): Event?
 

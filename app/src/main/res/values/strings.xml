@@ -1,12 +1,9 @@
 <resources>
     <string name="app_name">Guette tes kilomètres</string>
     <string name="app_short_name">GTK</string>
-    <string name="text_nb_participants">%s participants</string>
-    <string name="text_nb_kilometres">%s kms</string>
     <string name="label_no_event">Il n\'y a pas d\'évément pour l\'instant. Veuillez en ajouter un.</string>
 
     <string name="title_new_event">Créer événement</string>
-    <string name="label_name_event">Nom de l\'événement</string>
     <string name="message_error_name_event">Veuillez saisir un nom valide</string>
     <string name="message_error_firstname_missing">Le prénom est manquant</string>
 
@@ -42,6 +39,9 @@
     <!-- STRINGS V2 -->
     <string name="title_home">Accueil</string>
     <string name="title_participants">Participants</string>
+    <string name="title_events">Évènements en cours</string>
+
+    <string name="button_valider">Valider</string>
 
     <string name="label_evenements">Événements</string>
     <string name="label_closed_evenements">Clôturés</string>
@@ -63,5 +63,13 @@
     <string name="message_error_missing_field">Un champ est manquant.</string>
     <string name="message_error">Une erreur est survenue.\nVeuillez réessayer.</string>
 
-    <string name="button_valider">Valider</string>
+    <string name="text_nb_participants_nb_kilometres">%s participants | %s kms</string>
+    <string name="text_nb_kilometres">%s kms</string>
+    <string name="title_create_event">Créer un évènement</string>
+    <string name="title_edit_event">Modifier un évènement</string>
+    <string name="label_name_event">Nom de l\'événement</string>
+    <string name="label_start_meters">Mètres au commencement</string>
+    <string name="label_archiver">Archivé</string>
+    <string name="label_ascending">Mètres\ncroissants</string>
+    <string name="label_descending">Mètres\ndécroissants</string>
 </resources>

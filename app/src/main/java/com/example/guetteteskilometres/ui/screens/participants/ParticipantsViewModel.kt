@@ -2,8 +2,8 @@ package com.example.guetteteskilometres.ui.screens.participants
 
 import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Person
-import com.example.guetteteskilometres.data.model.enums.ParticipantField
 import com.example.guetteteskilometres.data.model.enums.ParticipantFilter
+import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import com.example.guetteteskilometres.data.repository.PersonRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -117,7 +117,7 @@ class ParticipantsViewModel @Inject constructor(
             val active = _state.value.active
             if (firstname.isNullOrEmpty()) {
                 _state.update { state ->
-                    state.copy(alert = ParticipantsAlert.MissingField)
+                    state.copy(alert = SaveAlert.MissingFields)
                 }
             } else {
                 val idPerson = personRepository.savePerson(
@@ -128,7 +128,7 @@ class ParticipantsViewModel @Inject constructor(
                     active = active
                 )
                 _state.update { state ->
-                    state.copy(alert = if (idPerson != null) ParticipantsAlert.Success else ParticipantsAlert.Error)
+                    state.copy(alert = if (idPerson != null) SaveAlert.Success else SaveAlert.Error)
                 }
                 idPerson?.let {
                     delay(600)

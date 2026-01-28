@@ -13,6 +13,10 @@ data class EventEntity(
     val id: Long,
     @ColumnInfo(name = "name")
     val name: String,
-    @ColumnInfo(name = "is_done")
-    val isDone: Boolean
+    @ColumnInfo(name = "start_meters")
+    val startMeters: Int,
+    @ColumnInfo(name = "ascending")
+    val ascending: Boolean,
+    @ColumnInfo(name = "active")
+    val active: Boolean
 )
