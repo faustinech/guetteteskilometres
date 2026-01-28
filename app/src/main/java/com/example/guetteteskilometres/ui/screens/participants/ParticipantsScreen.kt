@@ -152,25 +152,25 @@ private fun ScreenBody(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (state.persons.isNotEmpty()) {
-                stickyHeader {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        FilterChips(
-                            selectedFilter = state.activeFilter,
-                            onFilterSelected = { chip -> interactions.onFilterSelected(chip) }
-                        )
-                        ParticipantSearchBar(
-                            filter = state.filter,
-                            onFilterChanged = { filter -> interactions.onFilterChanged(filter) }
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
+            stickyHeader {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    FilterChips(
+                        selectedFilter = state.activeFilter,
+                        onFilterSelected = { chip -> interactions.onFilterSelected(chip) }
+                    )
+                    ParticipantSearchBar(
+                        filter = state.filter,
+                        onFilterChanged = { filter -> interactions.onFilterChanged(filter) }
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
                 }
+            }
+            if (state.persons.isNotEmpty()) {
                 items(state.persons) { person ->
                     PersonCard(person) { interactions.onPersonClicked(it) }
                 }
@@ -431,13 +431,15 @@ private fun ParticipantAlertDialog(
                         }
                     }
                 }
-                OutlinedButton(
-                    onClick = onValidateClicked,
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.button_valider)
-                    )
+                if (state.alert != ParticipantsAlert.Success) {
+                    OutlinedButton(
+                        onClick = onValidateClicked,
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.button_valider)
+                        )
+                    }
                 }
             }
         })

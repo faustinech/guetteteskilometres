@@ -13,15 +13,15 @@ class PersonRepository(
         return storage.getPersons(idEvent)
     }
 
-    suspend fun savePerson(name: String?, firstname: String, idEvent: Long): Long? {
+    suspend fun savePerson(id: Long?, firstname: String, name: String?, email: String?, active: Boolean?): Long? {
         return withContext(Dispatchers.IO) {
             storage.savePerson(
                 Person(
-                    id = 0,
+                    id = id ?: 0,
                     name = name,
                     firstname = firstname,
-                    email = null,
-                    active = true
+                    email = email,
+                    active = active ?: true
                 )
             )
         }

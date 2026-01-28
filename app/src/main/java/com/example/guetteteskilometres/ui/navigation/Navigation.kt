@@ -12,8 +12,6 @@ import com.example.guetteteskilometres.ui.screens.home.home
 import com.example.guetteteskilometres.ui.screens.newevent.NewEventNavigations
 import com.example.guetteteskilometres.ui.screens.newparticipation.NewParticipationNavigations
 import com.example.guetteteskilometres.ui.screens.newparticipation.newParticipation
-import com.example.guetteteskilometres.ui.screens.newperson.NewPersonNavigations
-import com.example.guetteteskilometres.ui.screens.newperson.newPerson
 import com.example.guetteteskilometres.ui.screens.participants.ParticipantsNavigations
 import com.example.guetteteskilometres.ui.screens.participants.participants
 import com.example.guetteteskilometres.ui.screens.participations.ParticipationsNavigations
@@ -48,13 +46,7 @@ fun Navigation(
         )
         participants(
             navigations = ParticipantsNavigations(
-                navigateUp = navController::popBackStack,
-                navigateToNewPerson = {
-                    // TODO FCH : à remplir
-                },
-                navigateToPerson = {
-                    // TODO FCH : à remplir
-                }
+                navigateUp = navController::popBackStack
             ),
             personRepository = appDependencies.personRepository
         )
@@ -90,18 +82,6 @@ fun Navigation(
             ),
             eventRepository = appDependencies.eventRepository,
             participationRepository = appDependencies.participationRepository,
-            personRepository = appDependencies.personRepository
-        )
-        newPerson(
-            navigations = NewPersonNavigations(
-                navigateUp = navController::popBackStack,
-                navigateUpWithPerson = { idPerson ->
-                    navController.previousBackStackEntry?.savedStateHandle?.set("ID_PERSON",
-                        idPerson.toString()
-                    )
-                    navController.popBackStack()
-                }
-            ),
             personRepository = appDependencies.personRepository
         )
     }

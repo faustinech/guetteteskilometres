@@ -8,11 +8,13 @@ import com.example.guetteteskilometres.data.repository.PersonRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ParticipantsViewModel @Inject constructor(
@@ -70,16 +72,16 @@ class ParticipantsViewModel @Inject constructor(
     fun updateField(type: ParticipantField, value: String?) {
         _state.update { state ->
             when (type) {
-                ParticipantField.Firstname -> state.copy(firstname = value)
-                ParticipantField.Name -> state.copy(name = value)
-                ParticipantField.Email -> state.copy(email = value)
+                ParticipantField.Firstname -> state.copy(firstname = value, alert = null)
+                ParticipantField.Name -> state.copy(name = value, alert = null)
+                ParticipantField.Email -> state.copy(email = value, alert = null)
             }
         }
     }
 
     fun updateActive(active: Boolean) {
         _state.update { state ->
-            state.copy(active = active)
+            state.copy(active = active, alert = null)
         }
     }
 
@@ -90,10 +92,49 @@ class ParticipantsViewModel @Inject constructor(
     }
 
     fun updateDialog(idPerson: Long?) {
-
+        viewModelScope.launch {
+            val person = idPerson?.let { personRepository.getPerson(it) }
+            _state.update { state ->
+                state.copy(
+                    idPerson = person?.id,
+                    firstname = person?.firstname,
+                    name = person?.name,
+                    email = person?.email,
+                    active = person?.active,
+                    isDialogVisible = true,
+                    alert = null
+                )
+            }
+        }
     }
 
     fun validate() {
-
+        viewModelScope.launch {
+            val id = _state.value.idPerson
+            val firstname = _state.value.firstname
+            val name = _state.value.name
+            val email = _state.value.email
+            val active = _state.value.active
+            if (firstname.isNullOrEmpty()) {
+                _state.update { state ->
+                    state.copy(alert = ParticipantsAlert.MissingField)
+                }
+            } else {
+                val idPerson = personRepository.savePerson(
+                    id = id,
+                    name = name,
+                    firstname = firstname,
+                    email = email,
+                    active = active
+                )
+                _state.update { state ->
+                    state.copy(alert = if (idPerson != null) ParticipantsAlert.Success else ParticipantsAlert.Error)
+                }
+                idPerson?.let {
+                    delay(600)
+                    _state.update { state -> state.copy(isDialogVisible = false) }
+                }
+            }
+        }
     }
 }
