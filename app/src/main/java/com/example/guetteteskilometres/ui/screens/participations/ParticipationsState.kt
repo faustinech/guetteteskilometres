@@ -2,26 +2,29 @@ package com.example.guetteteskilometres.ui.screens.participations
 
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
+import com.example.guetteteskilometres.data.model.Person
+import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import kotlinx.collections.immutable.ImmutableList
 
 data class ParticipationsState(
     val event: Event?,
     val participations: ImmutableList<Participation>,
-    val filter: String?,
+    val filter: String,
     val dialog: Dialog
 )
 
 sealed interface Dialog {
     data object None: Dialog
-    data object ConfirmCloture: Dialog
-    data object SucessSave: Dialog
-    data object ErrorSave: Dialog
+    data class Input(
+        val person: Person?,
+        val startMeters: String?,
+        val endMeters: String?,
+        val persons: ImmutableList<Person>,
+        val alert: SaveAlert? = null
+    ): Dialog
 }
 
-enum class ParticipationColumns(val display: String, val inRecap: Boolean) {
-    PRENOM("Prénom", inRecap = true),
-    NOM("Nom", inRecap = true),
-    DEBUT("Début", inRecap = false),
-    FIN("Fin", inRecap = false),
-    TOTAL("Total", inRecap = true)
+enum class ParticipationField {
+    StartMeters,
+    EndMeters;
 }

@@ -9,14 +9,12 @@ import com.example.guetteteskilometres.ui.navigation.Events
 
 fun NavGraphBuilder.events(
     navigations: EventsNavigations,
-    eventRepository: EventRepository,
-    participationRepository: ParticipationRepository
+    eventRepository: EventRepository
 ) {
     composable<Events> {
         val viewModel = viewModel {
             EventsViewModel(
-                eventRepository = eventRepository,
-                participationRepository = participationRepository
+                eventRepository = eventRepository
             )
         }
         EventsScreen(

@@ -1,8 +1,8 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
 import android.os.Build
-import androidx.activity.SystemBarStyle.Companion.dark
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,18 +11,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -30,26 +37,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
 import com.example.guetteteskilometres.data.model.Person
-import com.example.guetteteskilometres.ui.components.CustomCard
-import com.example.guetteteskilometres.ui.components.CustomField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import com.example.guetteteskilometres.ui.theme.black
-import com.example.guetteteskilometres.ui.theme.secondary
 import com.example.guetteteskilometres.ui.theme.secondaryRed
-import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,18 +68,16 @@ fun ParticipationsScreen(
         interactions = ParticipationsInteractions(
             onBackClicked = { navigations.navigateUp() },
             onCreationParticipationClicked = {
-                viewModel.updateFilter(null)
+                viewModel.updateFilter("")
                 navigations.navigateToParticipation(idEvent, null, true)
             },
-            onParticipationClicked = { idParticipation, isLastParticipation ->
-                viewModel.updateFilter(null)
-                navigations.navigateToParticipation(idEvent, idParticipation, isLastParticipation)
+            onParticipationClicked = { idParticipation ->
+                viewModel.updateFilter("")
+                navigations.navigateToParticipation(idEvent, idParticipation, false)
             },
-            onClotureEventClicked = viewModel::closeEvent,
             onFilterChanged = viewModel::updateFilter,
             onConfirmClotureClicked = viewModel::confirmClotureEvent,
-            onDismissDialogClicked = viewModel::dismissDialog,
-            onSaveClicked = viewModel::saveData
+            onDismissDialogClicked = viewModel::dismissDialog
         )
     )
 
@@ -93,7 +90,7 @@ fun ParticipationsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ScreenBody(
     state: ParticipationsState,
@@ -102,194 +99,155 @@ private fun ScreenBody(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.title_participations)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = black,
-                    titleContentColor = white
-                ),
-                modifier = Modifier.padding(bottom = 5.dp),
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null,
-                        tint = white,
-                        modifier = Modifier
-                            .clickable { interactions.onBackClicked() }
-                            .padding(horizontal = 5.dp)
-                    )
-                },
-                actions = {
-                    if (state.participations.isNotEmpty() && state.event?.active == false) {
-                        IconButton(
-                            onClick = interactions.onSaveClicked
+            Column {
+                TopAppBar(
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Share,
+                                imageVector = Icons.Default.ArrowBackIosNew,
                                 contentDescription = null,
-                                tint = Color.White
+                                modifier = Modifier
+                                    .clickable { interactions.onBackClicked() }
+                                    .padding(2.dp)
+                                    .size(18.dp)
+                            )
+                            Text(
+                                text = stringResource(
+                                    id = R.string.title_participations,
+                                    state.event?.name.orEmpty()
+                                ),
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
-                    }
-                }
-            )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = 2.dp
+                )
+            }
         } ,
         floatingActionButton = {
-            if (state.event?.active != false) {
-                Row(
-                    modifier = Modifier
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    FloatingActionButton(
-                        onClick = interactions.onCreationParticipationClicked,
-                        containerColor = secondary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = null
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = interactions.onClotureEventClicked,
-                        containerColor = secondaryRed,
-                        modifier = Modifier.padding(start = 10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Lock,
-                            contentDescription = null
-                        )
-                    }
-                }
+            FloatingActionButton(
+                onClick = { interactions.onCreationParticipationClicked() },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier.size(50.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
             }
         }
     ) { innerPadding ->
-        when (state.dialog) {
-            Dialog.ConfirmCloture -> AlertDialog(
-                title = {
-                    Text(text = stringResource(id = R.string.title_confirmation))
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.message_confirmation_cloture))
-                },
-                onDismissRequest = interactions.onDismissDialogClicked,
-                confirmButton = {
-                    Button(onClick = interactions.onConfirmClotureClicked) {
-                        Text(text = stringResource(id = R.string.common_yes))
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = interactions.onDismissDialogClicked) {
-                        Text(text = stringResource(id = R.string.common_no))
-                    }
-                }
-            )
-            Dialog.None -> { }
-            Dialog.ErrorSave -> AlertDialog(
-                title = {
-                    Text(text = stringResource(id = R.string.title_information))
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.message_wrong_save))
-                },
-                onDismissRequest = interactions.onDismissDialogClicked,
-                confirmButton = { },
-                dismissButton = {
-                    Button(onClick = interactions.onDismissDialogClicked) {
-                        Text(text = stringResource(id = R.string.common_ok))
-                    }
-                }
-            )
-            Dialog.SucessSave -> AlertDialog(
-                title = {
-                    Text(text = stringResource(id = R.string.title_information))
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.message_correct_save))
-                },
-                onDismissRequest = interactions.onDismissDialogClicked,
-                confirmButton = { },
-                dismissButton = {
-                    Button(onClick = interactions.onDismissDialogClicked) {
-                        Text(text = stringResource(id = R.string.common_ok))
-                    }
-                }
-            )
-        }
-
-        Column(
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(16.dp)
         ) {
-            if (state.participations.isNotEmpty() || (state.participations.isEmpty() && !state.filter.isNullOrEmpty())) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
+            stickyHeader {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val totalKilometers =
-                        state.participations.filter { it.endMeters != null }.sumOf {
-                            abs(
-                                it.startMeters - (it.endMeters ?: 0)
+                    if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        ) {
+                            val totalKilometers =
+                                state.participations.filter { it.endMeters != null }.sumOf {
+                                    abs(
+                                        it.startMeters - (it.endMeters ?: 0)
+                                    )
+                                } / 1000f
+                            if (state.filter.isEmpty()) {
+                                val nbPersons = state.participations.groupBy { it.person }.size
+                                Text(
+                                    text = pluralStringResource(
+                                        id = R.plurals.label_nb_participants,
+                                        count = nbPersons,
+                                        nbPersons
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = stringResource(
+                                    id = R.string.label_nb_kilometres_totaux,
+                                    totalKilometers.toString()
+                                ),
+                                style = MaterialTheme.typography.bodyMedium
                             )
-                        } / 1000f
-                    Text(text = state.event?.name.orEmpty())
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = stringResource(
-                            id = R.string.label_nb_kilometres_totaux,
-                            totalKilometers.toString()
-                        )
+                        }
+                    }
+                    OutlinedTextField(
+                        value = state.filter,
+                        onValueChange = interactions.onFilterChanged,
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.label_filter),
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                modifier = Modifier.clickable { interactions.onFilterChanged("") }
+                            )
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
                     )
                 }
-                CustomField(
-                    idLabel = R.string.label_filter,
-                    value = state.filter,
-                    idErrorMessage = null,
-                    onValueChange = interactions.onFilterChanged,
-                    onClearFilterClicked = { interactions.onFilterChanged("") },
-                    keyboardType = KeyboardType.Text
-                )
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    if (state.participations.isNotEmpty()) {
-                        state.participations.forEachIndexed { index, participation ->
-                            item {
-                                participation.Compose(interactions, index == state.participations.size - 1)
-                            }
-                        }
-                    } else {
-                        item {
-                            Text(
-                                text = stringResource(id = R.string.text_no_participations),
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 5.dp)
+            }
+            if (state.participations.isNotEmpty()) {
+                // En cours
+                state.participations.firstOrNull { it.endMeters == null }?.let { enCours ->
+                    item {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            enCours.Compose(
+                                interactions,
+                                modifier = Modifier.padding(bottom = 15.dp)
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
                     }
                 }
+                // Terminé
+                items(
+                    items = state.participations.filter { it.endMeters != null }
+                ) { participation ->
+                    participation.Compose(interactions)
+                }
             } else {
-                Text(
-                    text = stringResource(
-                        id = R.string.label_no_participation,
-                        state.event?.name.orEmpty()
-                    ),
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp)
-                )
+                item {
+                    Text(
+                        text = stringResource(id = R.string.label_no_participation),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp)
+                    )
+                }
             }
         }
     }
@@ -298,21 +256,66 @@ private fun ScreenBody(
 @Composable
 fun Participation.Compose(
     interactions: ParticipationsInteractions,
-    isLastParticipation: Boolean
+    modifier: Modifier = Modifier
 ) {
     val total = if (endMeters != null) {
         abs(startMeters - endMeters)
     } else null
-    CustomCard(
-        title = "${person.firstname} ${person.name ?: ""}",
-        leftText = if (total != null) {
-            stringResource(id = R.string.text_nb_metres, total)
-        } else stringResource(id = R.string.label_in_progress),
-        rightText = null,
-        backgroundColor = white,
-        onClick = { interactions.onParticipationClicked(id, isLastParticipation) },
-        onLongClick = { }
-    )
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { interactions.onParticipationClicked(this.id) },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                Text(
+                    text = "${person.firstname} ${person.name?.uppercase() ?: ""}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = if (total != null) {
+                        stringResource(id = R.string.text_nb_metres, total)
+                    } else stringResource(id = R.string.label_in_progress),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .size(24.dp)
+                    .clickable { /* TODO FCH */ }
+            )
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null,
+                tint = secondaryRed,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* TODO FCH */ }
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -332,7 +335,7 @@ private fun HomePreview() {
                 person = Person(1, "Luc", "Paul", null, true),
                 event = Event(1, "100", 100, true, false, 10000, 12),
                 startMeters = 1000,
-                endMeters = 3000
+                endMeters = null
             )
         )
         ScreenBody(
@@ -347,11 +350,11 @@ private fun HomePreview() {
                     nbParticipants = null
                 ),
                 participations = participations,
-                filter = null,
+                filter = "",
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { _, _ ->  }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }
             )
         )
     }
@@ -378,34 +381,7 @@ private fun NoParticipationPreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { _, _ -> }, { }, { }, { }, { }, { }
-            )
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ConfirmationPreview() {
-    GuetteTesKilometresTheme {
-        val participations = persistentListOf<Participation>()
-        ScreenBody(
-            state = ParticipationsState(
-                event = Event(
-                    id = 1,
-                    name = "100 kilomètres",
-                    totalMeters = 0,
-                    ascending = true,
-                    startMeters = 0,
-                    active = false,
-                    nbParticipants = null
-                ),
-                participations = participations,
-                filter = "",
-                dialog = Dialog.ConfirmCloture
-            ),
-            interactions = ParticipationsInteractions(
-                { }, { }, { _, _ -> }, { }, { }, { }, { }, { }
+                { }, { }, { }, { }, { }, { }
             )
         )
     }

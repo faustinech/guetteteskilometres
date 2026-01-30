@@ -55,8 +55,7 @@ fun Navigation(
                     // TODO FCH : à remplir
                 }
             ),
-            eventRepository = appDependencies.eventRepository,
-            participationRepository = appDependencies.participationRepository
+            eventRepository = appDependencies.eventRepository
         )
 
         participations(

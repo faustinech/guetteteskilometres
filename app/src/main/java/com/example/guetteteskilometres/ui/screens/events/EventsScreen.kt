@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,35 +86,37 @@ private fun ScreenBody(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBackIosNew,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clickable { interactions.onBackClicked() }
-                                .padding(2.dp)
-                                .size(18.dp)
-                        )
-                        Text(
-                            text = stringResource(id = R.string.title_events),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
+            Column {
+                TopAppBar(
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBackIosNew,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .clickable { interactions.onBackClicked() }
+                                    .padding(2.dp)
+                                    .size(18.dp)
+                            )
+                            Text(
+                                text = stringResource(id = R.string.title_events),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    )
                 )
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.primary,
-                thickness = 2.dp
-            )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = 2.dp
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -162,6 +165,16 @@ private fun ScreenBody(
                 },
                 containerColor = MaterialTheme.colorScheme.background
             )
+            is Dialog.Input -> {
+                CreateOrEditEventDialog(
+                    state = dialog,
+                    onValidateClicked = interactions.onValidateClicked,
+                    onFieldChanged = interactions.onFieldChanged,
+                    onActiveChanged = interactions.onActiveChanged,
+                    onDismissClicked = interactions.onDismissClicked,
+                    onAscendingChanged = interactions.onAscendingChanged
+                )
+            }
             Dialog.None -> { }
         }
         LazyColumn(
@@ -224,17 +237,6 @@ private fun ScreenBody(
                 }
             }
         }
-
-        if (state.isEditDialogVisible) {
-            CreateOrEditEventDialog(
-                state = state,
-                onValidateClicked = interactions.onValidateClicked,
-                onFieldChanged = interactions.onFieldChanged,
-                onActiveChanged = interactions.onActiveChanged,
-                onDismissClicked = interactions.onDismissClicked,
-                onAscendingChanged = interactions.onAscendingChanged
-            )
-        }
     }
 }
 
@@ -276,8 +278,9 @@ fun Event.Compose(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
-                    text = stringResource(
-                        R.string.text_nb_participants_nb_kilometres,
+                    text = pluralStringResource(
+                        R.plurals.text_nb_participants_nb_kilometres,
+                        nbParticipants ?: 0,
                         nbParticipants ?: 0,
                         kilometers?.roundToInt() ?: 0
                     ),

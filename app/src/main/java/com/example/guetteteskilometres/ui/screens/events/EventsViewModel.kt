@@ -18,8 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EventsViewModel @Inject constructor(
-    val eventRepository: EventRepository,
-    val participationRepository: ParticipationRepository
+    val eventRepository: EventRepository
 ): BaseViewModel() {
 
     private var _allEvents = emptyList<Event>()
@@ -74,7 +73,6 @@ class EventsViewModel @Inject constructor(
         _state.update {
             it.copy(
                 dialog = Dialog.None,
-                isEditDialogVisible = false,
                 idEventToDelete = null
             )
         }
@@ -95,21 +93,49 @@ class EventsViewModel @Inject constructor(
     fun updateField(type: EventField, value: String?) {
         _state.update { state ->
             when (type) {
-                EventField.Name -> state.copy(name = value, alert = null)
-                EventField.StartMeters -> state.copy(startMeters = value, alert = null)
+                EventField.Name -> state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            name = value,
+                            alert = null
+                        )
+                    } else state.dialog
+                )
+                EventField.StartMeters -> state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            startMeters = value,
+                            alert = null
+                        )
+                    } else state.dialog
+                )
             }
         }
     }
 
     fun updateActive(active: Boolean) {
         _state.update { state ->
-            state.copy(active = active, alert = null)
+            state.copy(
+                dialog = if (state.dialog is Dialog.Input) {
+                    state.dialog.copy(
+                        active = active,
+                        alert = null
+                    )
+                } else state.dialog
+            )
         }
     }
 
     fun updateAscending(ascending: Boolean) {
         _state.update { state ->
-            state.copy(active = ascending, alert = null)
+            state.copy(
+                dialog = if (state.dialog is Dialog.Input) {
+                    state.dialog.copy(
+                        ascending = ascending,
+                        alert = null
+                    )
+                } else state.dialog
+            )
         }
     }
 
@@ -118,13 +144,14 @@ class EventsViewModel @Inject constructor(
             val event = idEvent?.let { eventRepository.getEvent(it) }
             _state.update { state ->
                 state.copy(
-                    idEvent = event?.id,
-                    name = event?.name,
-                    startMeters = event?.startMeters?.toString(),
-                    active = event?.active,
-                    ascending = event?.ascending,
-                    isEditDialogVisible = true,
-                    alert = null
+                    dialog = Dialog.Input(
+                        idEvent = event?.id,
+                        name = event?.name,
+                        startMeters = event?.startMeters?.toString(),
+                        active = event?.active,
+                        ascending = event?.ascending,
+                        alert = null
+                    )
                 )
             }
         }
@@ -132,29 +159,44 @@ class EventsViewModel @Inject constructor(
 
     fun validate() {
         viewModelScope.launch {
-            val id = _state.value.idEvent
-            val name = _state.value.name
-            val startMeters = _state.value.startMeters
-            val active = _state.value.active
-            val ascending = _state.value.ascending
-            if (name.isNullOrEmpty() || startMeters.isNullOrEmpty()) {
-                _state.update { state ->
-                    state.copy(alert = SaveAlert.MissingFields)
-                }
-            } else {
-                val idEvent = eventRepository.saveEvent(
-                    id = id,
-                    name = name,
-                    startMeters = startMeters,
-                    ascending = ascending,
-                    active = active
-                )
-                _state.update { state ->
-                    state.copy(alert = if (idEvent != null) SaveAlert.Success else SaveAlert.Error)
-                }
-                idEvent?.let {
-                    delay(1000)
-                    _state.update { state -> state.copy(isEditDialogVisible = false) }
+            val dialog = state.value.dialog
+            if (dialog is Dialog.Input) {
+                val id = dialog.idEvent
+                val name = dialog.name
+                val startMeters = dialog.startMeters
+                val active = dialog.active
+                val ascending = dialog.ascending
+                if (name.isNullOrEmpty() || startMeters.isNullOrEmpty()) {
+                    _state.update { state ->
+                        state.copy(
+                            dialog = if (state.dialog is Dialog.Input) {
+                                state.dialog.copy(
+                                    alert = SaveAlert.MissingFields
+                                )
+                            } else state.dialog
+                        )
+                    }
+                } else {
+                    val idEvent = eventRepository.saveEvent(
+                        id = id,
+                        name = name,
+                        startMeters = startMeters,
+                        ascending = ascending,
+                        active = active
+                    )
+                    _state.update { state ->
+                        state.copy(
+                            dialog = if (state.dialog is Dialog.Input) {
+                                state.dialog.copy(
+                                    alert = if (idEvent != null) SaveAlert.Success else SaveAlert.Error
+                                )
+                            } else state.dialog
+                        )
+                    }
+                    idEvent?.let {
+                        delay(1000)
+                        _state.update { state -> state.copy(dialog = Dialog.None) }
+                    }
                 }
             }
         }

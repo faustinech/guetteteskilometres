@@ -36,7 +36,7 @@ class ParticipationsViewModel(
         ParticipationsState(
             event = null,
             participations = persistentListOf(),
-            filter = null,
+            filter = "",
             dialog = Dialog.None
         )
     )
@@ -63,22 +63,16 @@ class ParticipationsViewModel(
         }
     }
 
-    fun updateFilter(filter: String?) {
+    fun updateFilter(filter: String) {
         val filteredParticipations = allParticipations.filter {
             val libelle = "${it.person.firstname} ${it.person.name.orEmpty()}"
-            libelle.lowercase().contains(filter.orEmpty().lowercase())
+            libelle.lowercase().contains(filter.lowercase())
         }
         _state.update {
             it.copy(
                 participations = filteredParticipations.toImmutableList(),
                 filter = filter
             )
-        }
-    }
-
-    fun closeEvent() {
-        _state.update {
-            it.copy(dialog = Dialog.ConfirmCloture)
         }
     }
 
@@ -94,76 +88,5 @@ class ParticipationsViewModel(
         _state.update {
             it.copy(dialog = Dialog.None)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun saveData() {
-        try {
-            val event = _state.value.event ?: return
-            val dir = Environment.getExternalStorageDirectory().path + File.separator + "Documents"
-            val today = LocalDate.now()
-            val detailsFile = File(
-                dir,
-                "${event.name.uppercase().replace(' ', '_')}_" +
-                        "${today.year}_" +
-                        "${today.monthValue}_" +
-                        "${today.dayOfMonth}_DETAILS.csv"
-            )
-            val recapFile = File(
-                dir,
-                "${event.name.uppercase().replace(' ', '_')}_" +
-                        "${today.year}_" +
-                        "${today.monthValue}_" +
-                        "${today.dayOfMonth}_RECAP.csv"
-            )
-            FileOutputStream(detailsFile).apply { writeDetails(allParticipations) }
-            FileOutputStream(recapFile).apply { writeRecap(allParticipations) }
-            _state.update {
-                it.copy(dialog = Dialog.SucessSave)
-            }
-        } catch (e: Exception) {
-            _state.update {
-                it.copy(dialog = Dialog.ErrorSave)
-            }
-        }
-
-    }
-
-    private fun OutputStream.writeDetails(participations: List<Participation>) {
-        val writer = bufferedWriter()
-        val columns = ParticipationColumns.entries.joinToString(separator = ",") { it.display }
-        writer.write(columns)
-        writer.newLine()
-        participations.forEach {
-            writer.write("${it.person.firstname}, ${it.person.name.orEmpty()}, ${it.startMeters}, ${it.endMeters}, ${it.totalMeters}")
-            writer.newLine()
-        }
-        writer.flush()
-    }
-
-    private fun OutputStream.writeRecap(participations: List<Participation>) {
-        data class RecapCsvItem(
-            val firstname: String,
-            val name: String,
-            val totalMeters: Int
-        )
-
-        val writer = bufferedWriter()
-        val columnsRecap = ParticipationColumns.entries.filter { it.inRecap }.joinToString(separator = ",") { it.display }
-        writer.write(columnsRecap)
-        writer.newLine()
-        participations.groupBy { it.person }
-            .map { (person, participations) ->
-                RecapCsvItem(
-                    firstname = person.firstname,
-                    name = person.name.orEmpty(),
-                    totalMeters = participations.sumOf { it.totalMeters }
-                )
-            }.sortedByDescending { it.totalMeters }
-            .forEach {
-                writer.write("${it.firstname}, ${it.name}, ${it.totalMeters}")
-                writer.newLine()
-            }
-        writer.flush()
     }
 }

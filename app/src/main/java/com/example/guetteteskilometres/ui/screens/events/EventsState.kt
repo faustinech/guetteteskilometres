@@ -8,20 +8,23 @@ data class EventsState(
     val events: ImmutableList<Event>,
     val dialog: Dialog,
     val idEventToDelete: Long?,
-    val filter: String,
-    val isEditDialogVisible: Boolean = false,
-    val alert: SaveAlert? = null,
-    val idEvent: Long? = null,
-    val name: String? = null,
-    val startMeters: String? = null,
-    val active: Boolean? = null,
-    val ascending: Boolean? = null
+    val filter: String
 )
 
 sealed interface Dialog {
     data object None: Dialog
+
     data class ConfirmSuppression(
         val libelle: String
+    ): Dialog
+
+    data class Input(
+        val alert: SaveAlert? = null,
+        val idEvent: Long? = null,
+        val name: String? = null,
+        val startMeters: String? = null,
+        val active: Boolean? = null,
+        val ascending: Boolean? = null
     ): Dialog
 }
 

@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.events
+package com.example.guetteteskilometres.ui.screens.participations
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,37 +10,52 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.guetteteskilometres.R
+import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
+import com.example.guetteteskilometres.ui.screens.events.EventField
+import com.example.guetteteskilometres.ui.screens.participants.ParticipantField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
+import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateOrEditEventDialog(
-    onValidateClicked: () -> Unit,
+fun CreateOrEditParticipationDialog(
     onDismissClicked: () -> Unit,
-    onFieldChanged: (EventField, String?) -> Unit,
-    onAscendingChanged: (Boolean) -> Unit,
-    onActiveChanged: (Boolean) -> Unit,
+    onAddPersonClicked: () -> Unit,
+    onPersonChanged: (Person) -> Unit,
+    onFieldChanged: (ParticipationField, String?) -> Unit,
+    onValidateClicked: () -> Unit,
     state: Dialog.Input,
     modifier: Modifier = Modifier
 ) {
@@ -63,53 +78,121 @@ fun CreateOrEditEventDialog(
             ) {
                 Text(
                     text = stringResource(
-                        if (state.idEvent == null) {
-                            R.string.title_create_event
-                        } else R.string.title_edit_event
+                        if (state.person == null) {
+                            R.string.title_create_participation
+                        } else R.string.title_edit_participation
                     ),
                     style = MaterialTheme.typography.titleLarge
                 )
-                OutlinedTextField(
-                    value = state.name.orEmpty(),
-                    onValueChange = { onFieldChanged(EventField.Name, it) },
-                    placeholder = {
-                        Text(
-                            text = "${stringResource(R.string.label_name_event)} *",
-                            style = MaterialTheme.typography.labelLarge
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // TODO : voir pour le focus du champ participant
+                    var expanded by remember { mutableStateOf(false) }
+                    val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .menuAnchor()
+                                .clickable(
+                                    onClick = {
+                                        expanded = if (state.persons.isNotEmpty()) {
+                                            !expanded
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                ),
+                            value = state.person?.let { "${it.firstname} ${it.name.orEmpty()}" }.orEmpty(),
+                            onValueChange = {
+                                // Ne rien faire ?
+                            },
+                            label = { Text(text = stringResource(id = R.string.label_name_person)) },
+                            singleLine = true,
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable(
+                                        onClick = {
+                                            expanded = if (state.persons.isNotEmpty()) {
+                                                !expanded
+                                            } else {
+                                                false
+                                            }
+                                        }
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            enabled = state.persons.isNotEmpty()
                         )
-                    },
-                    trailingIcon = {
-                        if (!state.name.isNullOrEmpty()) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    onFieldChanged(EventField.Name, null)
-                                }
-                            )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .exposedDropdownSize()
+                                .background(white)
+                                .padding(horizontal = 10.dp)
+                        ) {
+                            for (person in state.persons) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = "${person.firstname} ${person.name.orEmpty()}")
+                                    },
+                                    onClick = {
+                                        expanded = false
+                                        onPersonChanged(person)
+                                    }
+                                )
+                            }
                         }
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium
-                )
+                    }
+                    IconButton(
+                        onClick = onAddPersonClicked,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = null
+                        )
+                    }
+                }
                 OutlinedTextField(
                     value = state.startMeters.orEmpty(),
-                    onValueChange = { onFieldChanged(EventField.StartMeters, it) },
+                    onValueChange = { onFieldChanged(ParticipationField.StartMeters, it) },
                     placeholder = {
                         Text(
-                            text = "${stringResource(R.string.label_start_meters)} *",
+                            text = "${stringResource(R.string.label_start_kilometres)} *",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium
+                )
+                OutlinedTextField(
+                    value = state.endMeters.orEmpty(),
+                    onValueChange = { onFieldChanged(ParticipationField.EndMeters, it) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.label_end_kilometres),
                             style = MaterialTheme.typography.labelLarge
                         )
                     },
                     trailingIcon = {
-                        if (!state.startMeters.isNullOrEmpty()) {
+                        if (!state.endMeters.isNullOrEmpty()) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null,
                                 modifier = Modifier.clickable {
-                                    onFieldChanged(EventField.StartMeters, null)
+                                    onFieldChanged(ParticipationField.EndMeters, null)
                                 }
                             )
                         }
@@ -119,42 +202,6 @@ fun CreateOrEditEventDialog(
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.label_descending),
-                        textAlign = TextAlign.End
-                    )
-                    Switch(
-                        checked = state.ascending ?: true,
-                        onCheckedChange = onAscendingChanged,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.label_ascending)
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.label_archiver),
-                        textAlign = TextAlign.End
-                    )
-                    Switch(
-                        checked = state.active ?: true,
-                        onCheckedChange = onActiveChanged,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.label_active)
-                    )
-                }
                 state.alert?.let {
                     when (it) {
                         SaveAlert.Error -> {
@@ -180,7 +227,7 @@ fun CreateOrEditEventDialog(
                         SaveAlert.Success -> {
                             Text(
                                 text = stringResource(
-                                    if (state.idEvent == null) {
+                                    if (state.person == null) {
                                         R.string.text_creation_ok
                                     } else R.string.text_edit_ok
                                 ),
@@ -212,18 +259,18 @@ fun CreateOrEditEventDialog(
 @Composable
 fun PreviewEventDialog() {
     GuetteTesKilometresTheme {
-        CreateOrEditEventDialog(
-            onValidateClicked = { },
+        CreateOrEditParticipationDialog(
             onDismissClicked = { },
-            onFieldChanged = { _, _-> },
-            onAscendingChanged = { },
-            onActiveChanged = { },
+            onAddPersonClicked = { },
+            onPersonChanged = { },
+            onFieldChanged = { _, _ -> },
+            onValidateClicked = { },
             state = Dialog.Input(
-                idEvent = null,
-                name = "100 kilomètres",
-                startMeters = null,
-                ascending = null,
-                active = null
+                person = null,
+                startMeters = "1234",
+                endMeters = null,
+                persons = persistentListOf(),
+                alert = null
             )
         )
     }

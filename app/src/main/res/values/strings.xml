@@ -7,7 +7,6 @@
     <string name="message_error_name_event">Veuillez saisir un nom valide</string>
     <string name="message_error_firstname_missing">Le prénom est manquant</string>
 
-    <string name="title_participations">Participations</string>
     <string name="title_new_participation">Nouvelle participation</string>
     <string name="title_new_person">Nouveau participant</string>
 
@@ -16,15 +15,8 @@
     <string name="message_error_missing_start_meters">Veuillez saisir les mètres de départ</string>
 
     <string name="label_name_person">Participant</string>
-    <string name="label_start_kilometres">Début (mètres)</string>
-    <string name="label_end_kilometres">Fin (mètres)</string>
     <string name="text_nb_metres">%s m</string>
-    <string name="label_nb_kilometres_totaux">Total - %s kms</string>
-    <string name="label_no_participation">Il n\'y a pas de participations pour l\'événement : %s</string>
-    <string name="label_filter">Filtrer</string>
-    <string name="label_in_progress">En cours</string>
     <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
-    <string name="text_no_participations">Il n\'y a pas de participation avec ce filtre.</string>
 
      <string name="common_yes">Oui</string>
     <string name="common_no">Non</string>
@@ -40,8 +32,10 @@
     <string name="title_home">Accueil</string>
     <string name="title_participants">Participants</string>
     <string name="title_events">Évènements en cours</string>
+    <string name="title_participations">Participations : %s</string>
 
     <string name="button_valider">Valider</string>
+    <string name="label_filter">Filtrer</string>
 
     <string name="label_evenements">Événements</string>
     <string name="label_closed_evenements">Clôturés</string>
@@ -63,7 +57,11 @@
     <string name="message_error_missing_field">Un champ est manquant.</string>
     <string name="message_error">Une erreur est survenue.\nVeuillez réessayer.</string>
 
-    <string name="text_nb_participants_nb_kilometres">%s participants | %s kms</string>
+    <plurals name="text_nb_participants_nb_kilometres">
+        <item quantity="zero">%s participant | %s km</item>
+        <item quantity="one">%s participant | %s kms</item>
+        <item quantity="other">%s participants | %s kms</item>
+    </plurals>
     <string name="text_nb_kilometres">%s kms</string>
     <string name="title_create_event">Créer un évènement</string>
     <string name="title_edit_event">Modifier un évènement</string>
@@ -72,4 +70,18 @@
     <string name="label_archiver">Archivé</string>
     <string name="label_ascending">Mètres\ncroissants</string>
     <string name="label_descending">Mètres\ndécroissants</string>
+
+    <string name="label_no_participation">Il n\'y a pas de participation.</string>
+    <string name="label_nb_kilometres_totaux">Total - %s kms</string>
+    <plurals name="label_nb_participants">
+        <item quantity="one">%s participant</item>
+        <item quantity="zero">%s participant</item>
+        <item quantity="other">%s participants</item>
+    </plurals>
+    <string name="label_in_progress">En cours</string>
+
+    <string name="title_create_participation">Créer une participation</string>
+    <string name="title_edit_participation">Modifier une participation</string>
+    <string name="label_start_kilometres">Début (mètres)</string>
+    <string name="label_end_kilometres">Fin (mètres)</string>
 </resources>
