@@ -27,8 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
+import com.example.guetteteskilometres.ui.theme.darkGreen
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
+import com.example.guetteteskilometres.ui.theme.primaryRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -175,7 +177,8 @@ fun CreateOrEditParticipantDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.MissingFields -> {
@@ -185,7 +188,19 @@ fun CreateOrEditParticipantDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
+                            )
+                        }
+                        SaveAlert.Incoherence -> {
+                            Text(
+                                text = stringResource(R.string.message_error_incoherent_field),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(lightRed, RoundedCornerShape(5.dp))
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.Success -> {
@@ -199,7 +214,8 @@ fun CreateOrEditParticipantDialog(
                                     .fillMaxWidth()
                                     .background(lightGreen, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = darkGreen
                             )
                         }
                     }

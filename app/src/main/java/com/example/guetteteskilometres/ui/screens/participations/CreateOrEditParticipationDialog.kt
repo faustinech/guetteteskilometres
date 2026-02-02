@@ -44,8 +44,10 @@ import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import com.example.guetteteskilometres.ui.screens.participants.CreateOrEditParticipantDialog
 import com.example.guetteteskilometres.ui.screens.participants.ParticipantField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
+import com.example.guetteteskilometres.ui.theme.darkGreen
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
+import com.example.guetteteskilometres.ui.theme.primaryRed
 import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 
@@ -214,7 +216,8 @@ fun CreateOrEditParticipationDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.MissingFields -> {
@@ -224,13 +227,25 @@ fun CreateOrEditParticipationDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
+                            )
+                        }
+                        SaveAlert.Incoherence -> {
+                            Text(
+                                text = stringResource(R.string.message_error_incoherent_field),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(lightRed, RoundedCornerShape(5.dp))
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.Success -> {
                             Text(
                                 text = stringResource(
-                                    if (state.person == null) {
+                                    if (state.idParticipation == null) {
                                         R.string.text_creation_ok
                                     } else R.string.text_edit_ok
                                 ),
@@ -238,7 +253,8 @@ fun CreateOrEditParticipationDialog(
                                     .fillMaxWidth()
                                     .background(lightGreen, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = darkGreen
                             )
                         }
                     }

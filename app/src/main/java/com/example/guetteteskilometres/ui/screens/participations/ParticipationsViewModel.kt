@@ -54,6 +54,7 @@ class ParticipationsViewModel(
         idEvent?.let {
             participationRepository.getParticipations(idEvent).onEach { participations ->
                 allParticipations = participations
+
                 _state.update {
                     it.copy(
                         event = eventRepository.getEvent(idEvent),
@@ -177,7 +178,9 @@ class ParticipationsViewModel(
                     dialog = Dialog.Input(
                         idParticipation = participation?.id,
                         person = participation?.person,
-                        startMeters = participation?.startMeters?.toString(),
+                        startMeters = participation?.startMeters?.toString()
+                            ?: allParticipations.firstOrNull()?.endMeters?.toString()
+                            ?: _state.value.event?.startMeters.toString(),
                         endMeters = participation?.endMeters?.toString(),
                         persons = personRepository.getAll().first().toImmutableList(),
                         alert = null,
@@ -261,7 +264,78 @@ class ParticipationsViewModel(
     }
 
     fun validate() {
-        // TODO FCH
+        viewModelScope.launch {
+            val saisie = _state.value.dialog
+            if (saisie is Dialog.Input) {
+                try {
+                    val startMeters = saisie.startMeters?.toIntOrNull()
+                    val endMeters = saisie.endMeters?.toIntOrNull()
+                    val person = saisie.person
+                    val event = _state.value.event
+                    val defaultStartMeters = allParticipations.firstOrNull { it.endMeters != null }?.endMeters ?: _state.value.event?.startMeters
+                    if (startMeters == null || person == null) {
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        alert = SaveAlert.MissingFields
+                                    )
+                                } else state.dialog
+                            )
+                        }
+                    } else if (
+                        (event?.ascending == true && (startMeters > (endMeters ?: 0))) ||
+                        (event?.ascending == false && (startMeters < (endMeters ?: 0))) ||
+                        (startMeters != defaultStartMeters)
+                    ) {
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        alert = SaveAlert.Incoherence
+                                    )
+                                } else state.dialog
+                            )
+                        }
+                    } else {
+                        val idParticipation = participationRepository.saveParticipation(
+                            idParticipation = saisie.idParticipation ?: 0,
+                            startMeters = startMeters,
+                            endMeters = endMeters,
+                            person = person,
+                            event = event ?: return@launch
+                        )
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        alert = if (idParticipation != null) SaveAlert.Success else SaveAlert.Error
+                                    )
+                                } else state.dialog
+                            )
+                        }
+                        idParticipation?.let {
+                            delay(600)
+                            _state.update { state ->
+                                state.copy(
+                                    dialog = Dialog.None,
+                                )
+                            }
+                        }
+                    }
+                } catch (_: NumberFormatException) {
+                    _state.update { state ->
+                        state.copy(
+                            dialog = if (state.dialog is Dialog.Input) {
+                                state.dialog.copy(
+                                    alert = SaveAlert.Error
+                                )
+                            } else state.dialog
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun updateField(type: ParticipationField, value: String?) {
@@ -270,7 +344,8 @@ class ParticipationsViewModel(
                 state.copy(
                     dialog = if (state.dialog is Dialog.Input) {
                         state.dialog.copy(
-                            startMeters = value
+                            startMeters = value,
+                            alert = null
                         )
                     } else state.dialog
                 )
@@ -279,7 +354,8 @@ class ParticipationsViewModel(
                 state.copy(
                     dialog = if (state.dialog is Dialog.Input) {
                         state.dialog.copy(
-                            endMeters = value
+                            endMeters = value,
+                            alert = null
                         )
                     } else state.dialog
                 )

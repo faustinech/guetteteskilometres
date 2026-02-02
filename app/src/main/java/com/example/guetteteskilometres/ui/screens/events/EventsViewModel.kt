@@ -141,7 +141,7 @@ class EventsViewModel @Inject constructor(
 
     fun updateDialog(idEvent: Long?) {
         viewModelScope.launch {
-            val event = idEvent?.let { eventRepository.getEvent(it) }
+            val event = idEvent?.let { _state.value.events.find { it.id == idEvent } }
             _state.update { state ->
                 state.copy(
                     dialog = Dialog.Input(
@@ -150,7 +150,8 @@ class EventsViewModel @Inject constructor(
                         startMeters = event?.startMeters?.toString(),
                         active = event?.active,
                         ascending = event?.ascending,
-                        alert = null
+                        alert = null,
+                        alreadyStart = event?.nbParticipants != null && event.nbParticipants != 0
                     )
                 )
             }

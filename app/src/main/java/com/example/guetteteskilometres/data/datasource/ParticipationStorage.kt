@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ParticipationStorage {
     fun getParticipations(idEvent: Long): Flow<List<Participation>>
 
-    suspend fun saveParticipation(participation: Participation)
+    suspend fun saveParticipation(participation: Participation): Long?
 
     suspend fun getParticipation(idParticipation: Long): Participation?
 

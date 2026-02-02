@@ -29,8 +29,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
+import com.example.guetteteskilometres.ui.theme.darkGreen
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
+import com.example.guetteteskilometres.ui.theme.primaryRed
 import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,48 +96,50 @@ fun CreateOrEditEventDialog(
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
-                OutlinedTextField(
-                    value = state.startMeters.orEmpty(),
-                    onValueChange = { onFieldChanged(EventField.StartMeters, it) },
-                    placeholder = {
-                        Text(
-                            text = "${stringResource(R.string.label_start_meters)} *",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    },
-                    trailingIcon = {
-                        if (!state.startMeters.isNullOrEmpty()) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    onFieldChanged(EventField.StartMeters, null)
-                                }
+                if (!state.alreadyStart) {
+                    OutlinedTextField(
+                        value = state.startMeters.orEmpty(),
+                        onValueChange = { onFieldChanged(EventField.StartMeters, it) },
+                        placeholder = {
+                            Text(
+                                text = "${stringResource(R.string.label_start_meters)} *",
+                                style = MaterialTheme.typography.labelLarge
                             )
-                        }
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.label_descending),
-                        textAlign = TextAlign.End
+                        },
+                        trailingIcon = {
+                            if (!state.startMeters.isNullOrEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable {
+                                        onFieldChanged(EventField.StartMeters, null)
+                                    }
+                                )
+                            }
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyMedium
                     )
-                    Switch(
-                        checked = state.ascending ?: true,
-                        onCheckedChange = onAscendingChanged,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.label_ascending)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.label_descending),
+                            textAlign = TextAlign.End
+                        )
+                        Switch(
+                            checked = state.ascending ?: true,
+                            onCheckedChange = onAscendingChanged,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.label_ascending)
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -164,7 +168,8 @@ fun CreateOrEditEventDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.MissingFields -> {
@@ -174,7 +179,19 @@ fun CreateOrEditEventDialog(
                                     .fillMaxWidth()
                                     .background(lightRed, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
+                            )
+                        }
+                        SaveAlert.Incoherence -> {
+                            Text(
+                                text = stringResource(R.string.message_error_incoherent_field),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(lightRed, RoundedCornerShape(5.dp))
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
                             )
                         }
                         SaveAlert.Success -> {
@@ -188,7 +205,8 @@ fun CreateOrEditEventDialog(
                                     .fillMaxWidth()
                                     .background(lightGreen, RoundedCornerShape(5.dp))
                                     .padding(16.dp),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = darkGreen
                             )
                         }
                     }
@@ -223,7 +241,8 @@ fun PreviewEventDialog() {
                 name = "100 kilomètres",
                 startMeters = null,
                 ascending = null,
-                active = null
+                active = null,
+                alreadyStart = true
             )
         )
     }

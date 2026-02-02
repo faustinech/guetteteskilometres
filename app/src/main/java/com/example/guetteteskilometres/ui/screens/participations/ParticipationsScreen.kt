@@ -143,13 +143,15 @@ private fun ScreenBody(
             }
         } ,
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { interactions.onCreationParticipationClicked() },
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.size(50.dp)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
+            if (state.participations.isEmpty() || (state.participations.isNotEmpty() && state.participations.first().endMeters != null)) {
+                FloatingActionButton(
+                    onClick = { interactions.onCreationParticipationClicked() },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.size(50.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                }
             }
         }
     ) { innerPadding ->
@@ -286,7 +288,7 @@ fun Participation.Compose(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { interactions.onParticipationClicked(this.id) },
+            .clickable { interactions.onParticipationClicked(id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -319,23 +321,6 @@ fun Participation.Compose(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(24.dp)
-                    .clickable { /* TODO FCH */ }
-            )
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = null,
-                tint = secondaryRed,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* TODO FCH */ }
-            )
         }
     }
 }

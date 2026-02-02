@@ -24,7 +24,8 @@ sealed interface Dialog {
         val name: String? = null,
         val startMeters: String? = null,
         val active: Boolean? = null,
-        val ascending: Boolean? = null
+        val ascending: Boolean? = null,
+        val alreadyStart: Boolean
     ): Dialog
 }
 

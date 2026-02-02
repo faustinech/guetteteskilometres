@@ -17,8 +17,8 @@ class RoomParticipationStorage(
         }
     }
 
-    override suspend fun saveParticipation(participation: Participation) {
-        participationDao.insertParticipation(participation.toEntity())
+    override suspend fun saveParticipation(participation: Participation): Long? {
+        return participationDao.insertParticipation(participation.toEntity())
     }
 
     override suspend fun getParticipation(idParticipation: Long): Participation? {

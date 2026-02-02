@@ -21,8 +21,8 @@ class ParticipationRepository(
         endMeters: Int?,
         person: Person,
         event: Event
-    ) {
-        withContext(Dispatchers.IO) {
+    ): Long? {
+        return withContext(Dispatchers.IO) {
             storage.saveParticipation(
                 Participation(
                     id = idParticipation ?: 0,
