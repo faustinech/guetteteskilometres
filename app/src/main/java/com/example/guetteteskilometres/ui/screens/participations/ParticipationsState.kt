@@ -4,6 +4,7 @@ import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
 import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
+import com.example.guetteteskilometres.ui.screens.participants.CreateOrEditParticipantDialogInfos
 import kotlinx.collections.immutable.ImmutableList
 
 data class ParticipationsState(
@@ -16,11 +17,13 @@ data class ParticipationsState(
 sealed interface Dialog {
     data object None: Dialog
     data class Input(
+        val idParticipation: Long?,
         val person: Person?,
         val startMeters: String?,
         val endMeters: String?,
         val persons: ImmutableList<Person>,
-        val alert: SaveAlert? = null
+        val alert: SaveAlert? = null,
+        val createOrEditParticipantDialogInfos: CreateOrEditParticipantDialogInfos?
     ): Dialog
 }
 

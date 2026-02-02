@@ -3,12 +3,10 @@ package com.example.guetteteskilometres.ui.screens.participants
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -167,9 +165,9 @@ private fun ScreenBody(
             }
         }
 
-        if (state.isDialogVisible) {
+        state.dialog?.let {
             CreateOrEditParticipantDialog(
-                state = state,
+                state = it,
                 onValidateClicked = interactions.onValidateClicked,
                 onDismissClicked = interactions.onDismissClicked,
                 onFieldChanged = interactions.onFieldChanged,
@@ -286,25 +284,7 @@ private fun PersonCard(
 private fun ParticipantsAlertDialogPreview() {
     GuetteTesKilometresTheme {
         CreateOrEditParticipantDialog(
-            state = ParticipantsState(
-                persons = persistentListOf(
-                    Person(
-                        id = 1,
-                        name = "Charrette",
-                        firstname = "Faustine",
-                        email = null,
-                        active = true
-                    ),
-                    Person(
-                        id = 2,
-                        name = "Ditto",
-                        firstname = "Sarah",
-                        email = null,
-                        active = true
-                    )
-                ),
-                activeFilter = ParticipantFilter.All,
-                filter = "",
+            state = CreateOrEditParticipantDialogInfos(
                 idPerson = null,
                 firstname = null,
                 name = null,
@@ -351,11 +331,14 @@ private fun ParticipantsScreenPreview() {
                 ),
                 activeFilter = ParticipantFilter.All,
                 filter = "",
-                idPerson = null,
-                firstname = null,
-                name = null,
-                email = null,
-                active = null
+                dialog = CreateOrEditParticipantDialogInfos(
+                    idPerson = null,
+                    firstname = null,
+                    name = null,
+                    email = null,
+                    active = null,
+                    alert = SaveAlert.Error
+                )
             ),
             interactions = ParticipantsInteractions(
                 { },

@@ -52,28 +52,22 @@ fun Navigation(
             navigations = EventsNavigations(
                 navigateUp = navController::popBackStack,
                 navigateToEvent = {
-                    // TODO FCH : à remplir
+                    navController.navigate(
+                        Participations(it)
+                    )
                 }
             ),
             eventRepository = appDependencies.eventRepository
         )
-
         participations(
             navigations = ParticipationsNavigations(
-                navigateUp = navController::popBackStack,
-                navigateToParticipation = { idEvent, idParticipation, isLastParticipation ->
-                    navController.navigate(
-                        NewParticipation(
-                            idEvent = idEvent,
-                            idParticipation = idParticipation ?: -1,
-                            isLastParticipation = isLastParticipation
-                        )
-                    )
-                }
+                navigateUp = navController::popBackStack
             ),
             eventRepository = appDependencies.eventRepository,
-            participationRepository = appDependencies.participationRepository
+            participationRepository = appDependencies.participationRepository,
+            personRepository = appDependencies.personRepository
         )
+
         newParticipation(
             navigations = NewParticipationNavigations(
                 navigateUp = navController::popBackStack,

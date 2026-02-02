@@ -26,7 +26,8 @@ class ParticipantsViewModel @Inject constructor(
         ParticipantsState(
             persons = persistentListOf(),
             activeFilter = ParticipantFilter.All,
-            filter = ""
+            filter = "",
+            dialog = null
         )
     )
     val state: StateFlow<ParticipantsState> = _state
@@ -72,22 +73,42 @@ class ParticipantsViewModel @Inject constructor(
     fun updateField(type: ParticipantField, value: String?) {
         _state.update { state ->
             when (type) {
-                ParticipantField.Firstname -> state.copy(firstname = value, alert = null)
-                ParticipantField.Name -> state.copy(name = value, alert = null)
-                ParticipantField.Email -> state.copy(email = value, alert = null)
+                ParticipantField.Firstname -> state.copy(
+                    dialog = state.dialog?.copy(
+                        firstname = value,
+                        alert = null
+                    )
+                )
+                ParticipantField.Name -> state.copy(
+                    dialog = state.dialog?.copy(
+                        name = value,
+                        alert = null
+                    )
+                )
+                ParticipantField.Email -> state.copy(
+                    dialog = state.dialog?.copy(
+                        email = value,
+                        alert = null
+                    )
+                )
             }
         }
     }
 
     fun updateActive(active: Boolean) {
         _state.update { state ->
-            state.copy(active = active, alert = null)
+            state.copy(
+                dialog = state.dialog?.copy(
+                    active = active,
+                    alert = null
+                )
+            )
         }
     }
 
     fun dismissDialog() {
         _state.update { state ->
-            state.copy(isDialogVisible = false)
+            state.copy(dialog = null)
         }
     }
 
@@ -96,13 +117,14 @@ class ParticipantsViewModel @Inject constructor(
             val person = idPerson?.let { personRepository.getPerson(it) }
             _state.update { state ->
                 state.copy(
-                    idPerson = person?.id,
-                    firstname = person?.firstname,
-                    name = person?.name,
-                    email = person?.email,
-                    active = person?.active,
-                    isDialogVisible = true,
-                    alert = null
+                    dialog = state.dialog?.copy(
+                        idPerson = person?.id,
+                        firstname = person?.firstname,
+                        name = person?.name,
+                        email = person?.email,
+                        active = person?.active,
+                        alert = null
+                    )
                 )
             }
         }
@@ -110,14 +132,19 @@ class ParticipantsViewModel @Inject constructor(
 
     fun validate() {
         viewModelScope.launch {
-            val id = _state.value.idPerson
-            val firstname = _state.value.firstname
-            val name = _state.value.name
-            val email = _state.value.email
-            val active = _state.value.active
+            val dialog = _state.value.dialog
+            val id = dialog?.idPerson
+            val firstname = dialog?.firstname
+            val name = dialog?.name
+            val email = dialog?.email
+            val active = dialog?.active
             if (firstname.isNullOrEmpty()) {
                 _state.update { state ->
-                    state.copy(alert = SaveAlert.MissingFields)
+                    state.copy(
+                        dialog = state.dialog?.copy(
+                            alert = SaveAlert.MissingFields
+                        )
+                    )
                 }
             } else {
                 val idPerson = personRepository.savePerson(
@@ -128,11 +155,15 @@ class ParticipantsViewModel @Inject constructor(
                     active = active
                 )
                 _state.update { state ->
-                    state.copy(alert = if (idPerson != null) SaveAlert.Success else SaveAlert.Error)
+                    state.copy(
+                        dialog = state.dialog?.copy(
+                            alert = if (idPerson != null) SaveAlert.Success else SaveAlert.Error
+                        )
+                    )
                 }
                 idPerson?.let {
                     delay(600)
-                    _state.update { state -> state.copy(isDialogVisible = false) }
+                    _state.update { state -> state.copy(dialog = null) }
                 }
             }
         }

@@ -9,13 +9,7 @@ data class ParticipantsState(
     val persons: ImmutableList<Person>,
     val activeFilter: ParticipantFilter,
     val filter: String,
-    val alert: SaveAlert? = null,
-    val isDialogVisible: Boolean = false,
-    val idPerson: Long? = null,
-    val firstname: String? = null,
-    val name: String? = null,
-    val email: String? = null,
-    val active: Boolean? = null
+    val dialog: CreateOrEditParticipantDialogInfos?
 )
 
 enum class ParticipantField {
@@ -23,3 +17,12 @@ enum class ParticipantField {
     Name,
     Email;
 }
+
+data class CreateOrEditParticipantDialogInfos(
+    val idPerson: Long? = null,
+    val firstname: String? = null,
+    val name: String? = null,
+    val email: String? = null,
+    val active: Boolean? = null,
+    val alert: SaveAlert? = null
+)

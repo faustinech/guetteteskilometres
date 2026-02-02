@@ -69,15 +69,23 @@ fun ParticipationsScreen(
             onBackClicked = { navigations.navigateUp() },
             onCreationParticipationClicked = {
                 viewModel.updateFilter("")
-                navigations.navigateToParticipation(idEvent, null, true)
+                viewModel.updateDialog(null)
             },
             onParticipationClicked = { idParticipation ->
                 viewModel.updateFilter("")
-                navigations.navigateToParticipation(idEvent, idParticipation, false)
+                viewModel.updateDialog(idParticipation)
             },
             onFilterChanged = viewModel::updateFilter,
             onConfirmClotureClicked = viewModel::confirmClotureEvent,
-            onDismissDialogClicked = viewModel::dismissDialog
+            onDismissDialogClicked = viewModel::dismissDialog,
+            onValidateNewParticipantClicked = viewModel::validateNewParticipant,
+            onActiveChanged = viewModel::updateActive,
+            onNewParticipantFieldChanged = viewModel::updateNewParticipantField,
+            onNewParticipantsDismissClicked = viewModel::dismissNewParticipantDialog,
+            onPersonChanged = viewModel::updatePerson,
+            onAddPersonClicked = viewModel::updateNewPersonDialog,
+            onValidateClicked = viewModel::validate,
+            onFieldChanged = viewModel::updateField
         )
     )
 
@@ -250,6 +258,20 @@ private fun ScreenBody(
                 }
             }
         }
+        if (state.dialog is Dialog.Input) {
+            CreateOrEditParticipationDialog(
+                onDismissClicked = interactions.onDismissDialogClicked,
+                onAddPersonClicked = interactions.onAddPersonClicked,
+                onPersonChanged = interactions.onPersonChanged,
+                onFieldChanged = interactions.onFieldChanged,
+                onValidateClicked = interactions.onValidateClicked,
+                onValidateNewParticipantClicked = interactions.onValidateNewParticipantClicked,
+                onActiveChanged = interactions.onActiveChanged,
+                onNewParticipantFieldChanged = interactions.onNewParticipantFieldChanged,
+                onNewParticipantsDismissClicked = interactions.onNewParticipantsDismissClicked,
+                state = state.dialog
+            )
+        }
     }
 }
 
@@ -354,7 +376,20 @@ private fun HomePreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { _, _ -> },
+                { },
+                { },
+                { },
+                { },
+                { _, _ -> }
             )
         )
     }
@@ -381,7 +416,20 @@ private fun NoParticipationPreview() {
                 dialog = Dialog.None
             ),
             interactions = ParticipationsInteractions(
-                { }, { }, { }, { }, { }, { }
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { },
+                { _, _ -> },
+                { },
+                { },
+                { },
+                { },
+                { _, _ -> }
             )
         )
     }

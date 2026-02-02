@@ -20,9 +20,11 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
-import com.example.guetteteskilometres.ui.screens.events.EventField
+import com.example.guetteteskilometres.ui.screens.participants.CreateOrEditParticipantDialog
 import com.example.guetteteskilometres.ui.screens.participants.ParticipantField
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
 import com.example.guetteteskilometres.ui.theme.lightGreen
@@ -56,6 +57,10 @@ fun CreateOrEditParticipationDialog(
     onPersonChanged: (Person) -> Unit,
     onFieldChanged: (ParticipationField, String?) -> Unit,
     onValidateClicked: () -> Unit,
+    onValidateNewParticipantClicked: () -> Unit,
+    onActiveChanged: (Boolean) -> Unit,
+    onNewParticipantFieldChanged: (ParticipantField, String?) -> Unit,
+    onNewParticipantsDismissClicked: () -> Unit,
     state: Dialog.Input,
     modifier: Modifier = Modifier
 ) {
@@ -108,9 +113,7 @@ fun CreateOrEditParticipationDialog(
                                     }
                                 ),
                             value = state.person?.let { "${it.firstname} ${it.name.orEmpty()}" }.orEmpty(),
-                            onValueChange = {
-                                // Ne rien faire ?
-                            },
+                            onValueChange = { },
                             label = { Text(text = stringResource(id = R.string.label_name_person)) },
                             singleLine = true,
                             readOnly = true,
@@ -130,14 +133,14 @@ fun CreateOrEditParticipationDialog(
                                 )
                             },
                             shape = RoundedCornerShape(12.dp),
-                            enabled = state.persons.isNotEmpty()
+                            enabled = state.persons.isNotEmpty() || state.person != null
                         )
                         ExposedDropdownMenu(
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
                             modifier = Modifier
                                 .exposedDropdownSize()
-                                .background(white)
+                                .background(MaterialTheme.colorScheme.background)
                                 .padding(horizontal = 10.dp)
                         ) {
                             for (person in state.persons) {
@@ -250,6 +253,16 @@ fun CreateOrEditParticipationDialog(
                         )
                     }
                 }
+
+                state.createOrEditParticipantDialogInfos?.let {
+                    CreateOrEditParticipantDialog(
+                        state = it,
+                        onValidateClicked = onValidateNewParticipantClicked,
+                        onDismissClicked = onNewParticipantsDismissClicked,
+                        onFieldChanged = onNewParticipantFieldChanged,
+                        onActiveChanged = onActiveChanged
+                    )
+                }
             }
         }
     )
@@ -270,8 +283,14 @@ fun PreviewEventDialog() {
                 startMeters = "1234",
                 endMeters = null,
                 persons = persistentListOf(),
-                alert = null
-            )
+                alert = null,
+                idParticipation = null,
+                createOrEditParticipantDialogInfos = null
+            ),
+            onValidateNewParticipantClicked = { },
+            onActiveChanged = { },
+            onNewParticipantFieldChanged = { _, _ -> },
+            onNewParticipantsDismissClicked = { }
         )
     }
 }

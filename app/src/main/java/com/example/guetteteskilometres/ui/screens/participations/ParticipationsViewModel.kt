@@ -1,33 +1,34 @@
 package com.example.guetteteskilometres.ui.screens.participations
 
-import android.os.Build
-import android.os.Environment
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Participation
+import com.example.guetteteskilometres.data.model.Person
+import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import com.example.guetteteskilometres.data.repository.EventRepository
 import com.example.guetteteskilometres.data.repository.ParticipationRepository
+import com.example.guetteteskilometres.data.repository.PersonRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
+import com.example.guetteteskilometres.ui.screens.participants.CreateOrEditParticipantDialogInfos
+import com.example.guetteteskilometres.ui.screens.participants.ParticipantField
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.time.LocalDate
 
 
 class ParticipationsViewModel(
     val eventRepository: EventRepository,
-    val participationRepository: ParticipationRepository
+    val participationRepository: ParticipationRepository,
+    val personRepository: PersonRepository
 ): BaseViewModel() {
 
     private var allParticipations = emptyList<Participation>()
@@ -87,6 +88,202 @@ class ParticipationsViewModel(
     fun dismissDialog() {
         _state.update {
             it.copy(dialog = Dialog.None)
+        }
+    }
+
+    fun updateNewParticipantField(type: ParticipantField, value: String?) {
+        _state.update { state ->
+            when (type) {
+                ParticipantField.Firstname -> state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                                firstname = value,
+                                alert = null
+                            )
+                        )
+                    } else state.dialog
+                )
+                ParticipantField.Name -> state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                                name = value,
+                                alert = null
+                            )
+                        )
+                    } else state.dialog
+                )
+                ParticipantField.Email -> state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                                email = value,
+                                alert = null
+                            )
+                        )
+                    } else state.dialog
+                )
+            }
+        }
+    }
+
+    fun updateActive(active: Boolean) {
+        _state.update { state ->
+            state.copy(
+                dialog = if (state.dialog is Dialog.Input) {
+                    state.dialog.copy(
+                        createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                            active = active,
+                            alert = null
+                        )
+                    )
+                } else state.dialog
+            )
+        }
+    }
+
+    fun dismissNewParticipantDialog() {
+        _state.update { state ->
+            state.copy(
+                dialog = if (state.dialog is Dialog.Input) {
+                    state.dialog.copy(
+                        createOrEditParticipantDialogInfos = null
+                    )
+                } else state.dialog
+            )
+        }
+    }
+
+    fun updateNewPersonDialog() {
+        viewModelScope.launch {
+            _state.update { state ->
+                state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            createOrEditParticipantDialogInfos = CreateOrEditParticipantDialogInfos()
+                        )
+                    } else state.dialog
+                )
+            }
+        }
+    }
+
+    fun updateDialog(idParticipation: Long?) {
+        viewModelScope.launch {
+            val participation = if (idParticipation != null) participationRepository.getParticipation(idParticipation) else null
+            _state.update { state ->
+                state.copy(
+                    dialog = Dialog.Input(
+                        idParticipation = participation?.id,
+                        person = participation?.person,
+                        startMeters = participation?.startMeters?.toString(),
+                        endMeters = participation?.endMeters?.toString(),
+                        persons = personRepository.getAll().first().toImmutableList(),
+                        alert = null,
+                        createOrEditParticipantDialogInfos = null
+                    )
+                )
+            }
+        }
+    }
+
+    fun validateNewParticipant() {
+        viewModelScope.launch {
+            _state.value.dialog.let { dialog ->
+                if (dialog is Dialog.Input) {
+                    val dialogNewPerson = dialog.createOrEditParticipantDialogInfos
+                    val id = dialogNewPerson?.idPerson
+                    val firstname = dialogNewPerson?.firstname
+                    val name = dialogNewPerson?.name
+                    val email = dialogNewPerson?.email
+                    val active = dialogNewPerson?.active
+                    if (firstname.isNullOrEmpty()) {
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                                            alert = SaveAlert.MissingFields
+                                        )
+                                    )
+                                } else state.dialog
+                            )
+                        }
+                    } else {
+                        val idPerson = personRepository.savePerson(
+                            id = id,
+                            name = name,
+                            firstname = firstname,
+                            email = email,
+                            active = active
+                        )
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        createOrEditParticipantDialogInfos = state.dialog.createOrEditParticipantDialogInfos?.copy(
+                                            alert = if (idPerson != null) SaveAlert.Success else SaveAlert.Error
+                                        )
+                                    )
+                                } else state.dialog
+                            )
+                        }
+                        idPerson?.let {
+                            delay(600)
+                            _state.update { state ->
+                                state.copy(
+                                    dialog = if (state.dialog is Dialog.Input) {
+                                        state.dialog.copy(
+                                            person = personRepository.getPerson(idPerson),
+                                            createOrEditParticipantDialogInfos = null
+                                        )
+                                    } else state.dialog,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updatePerson(person: Person) {
+        _state.update { state ->
+            state.copy(
+                dialog = if (state.dialog is Dialog.Input) {
+                    state.dialog.copy(
+                        person = person
+                    )
+                } else state.dialog
+            )
+        }
+    }
+
+    fun validate() {
+        // TODO FCH
+    }
+
+    fun updateField(type: ParticipationField, value: String?) {
+        when (type) {
+            ParticipationField.StartMeters -> _state.update { state ->
+                state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            startMeters = value
+                        )
+                    } else state.dialog
+                )
+            }
+            ParticipationField.EndMeters -> _state.update { state ->
+                state.copy(
+                    dialog = if (state.dialog is Dialog.Input) {
+                        state.dialog.copy(
+                            endMeters = value
+                        )
+                    } else state.dialog
+                )
+            }
         }
     }
 }

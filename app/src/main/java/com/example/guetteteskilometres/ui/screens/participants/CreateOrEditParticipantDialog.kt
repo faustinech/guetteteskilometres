@@ -33,12 +33,12 @@ import com.example.guetteteskilometres.ui.theme.lightRed
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOrEditParticipantDialog(
-        state: ParticipantsState,
-        onValidateClicked: () -> Unit,
-        onDismissClicked: () -> Unit,
-        onFieldChanged: (ParticipantField, String?) -> Unit,
-        onActiveChanged: (Boolean) -> Unit,
-        modifier: Modifier = Modifier
+    state: CreateOrEditParticipantDialogInfos,
+    onValidateClicked: () -> Unit,
+    onDismissClicked: () -> Unit,
+    onFieldChanged: (ParticipantField, String?) -> Unit,
+    onActiveChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissClicked,
