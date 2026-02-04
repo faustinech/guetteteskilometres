@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.guetteteskilometres.di.AppDependencies
+import com.example.guetteteskilometres.ui.screens.archive.ArchiveEventsNavigations
+import com.example.guetteteskilometres.ui.screens.archive.archiveEvents
 import com.example.guetteteskilometres.ui.screens.events.EventsNavigations
 import com.example.guetteteskilometres.ui.screens.events.events
 import com.example.guetteteskilometres.ui.screens.home.HomeNavigations
@@ -33,7 +35,7 @@ fun Navigation(
                     navController.navigate(Events)
                 },
                 navigateToClosedEvents = {
-                    // TODO FCH : revoir
+                    navController.navigate(ArchiveEvents)
                 },
                 navigateToUsers = {
                     navController.navigate(Participants)
@@ -64,6 +66,15 @@ fun Navigation(
             eventRepository = appDependencies.eventRepository,
             participationRepository = appDependencies.participationRepository,
             personRepository = appDependencies.personRepository
+        )
+        archiveEvents(
+            navigations = ArchiveEventsNavigations(
+                navigateUp = navController::popBackStack,
+                navigateToEvent = {
+                    // TODO FCH
+                }
+            ),
+            eventRepository = appDependencies.eventRepository
         )
     }
 

@@ -31,8 +31,9 @@
     <!-- STRINGS V2 -->
     <string name="title_home">Accueil</string>
     <string name="title_participants">Participants</string>
-    <string name="title_events">Évènements en cours</string>
+    <string name="title_events">Événements en cours</string>
     <string name="title_participations">Participations : %s</string>
+    <string name="title_archive_events">Événements archivés</string>
 
     <string name="button_valider">Valider</string>
     <string name="label_filter">Filtrer</string>
@@ -85,4 +86,5 @@
     <string name="label_start_kilometres">Début (mètres)</string>
     <string name="label_end_kilometres">Fin (mètres)</string>
     <string name="message_error_incoherent_field">Les champs ne sont pas cohérents.</string>
+    <string name="label_no_archive_event">Il n\'existe pas d\'événement correspondant pour l\'instant.</string>
 </resources>

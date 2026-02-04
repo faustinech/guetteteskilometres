@@ -13,6 +13,9 @@ data object NewEvent
 data object Events
 
 @Serializable
+data object ArchiveEvents
+
+@Serializable
 data class Participations(
     val idEvent: Long
 )
