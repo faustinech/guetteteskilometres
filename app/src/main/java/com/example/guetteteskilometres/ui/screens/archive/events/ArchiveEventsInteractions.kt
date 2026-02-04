@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.archive
+package com.example.guetteteskilometres.ui.screens.archive.events
 
 data class ArchiveEventsInteractions(
     val onBackClicked: () -> Unit,

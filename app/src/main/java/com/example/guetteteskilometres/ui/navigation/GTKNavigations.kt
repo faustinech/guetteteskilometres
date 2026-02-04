@@ -1,34 +1,25 @@
 package com.example.guetteteskilometres.ui.navigation
 
-import androidx.annotation.Nullable
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object Home
 
 @Serializable
-data object NewEvent
+data object Events
 
 @Serializable
-data object Events
+data object Participants
 
 @Serializable
 data object ArchiveEvents
 
 @Serializable
-data class Participations(
+data class ArchiveParticipations(
     val idEvent: Long
 )
 
 @Serializable
-data class NewParticipation(
-    val idEvent: Long,
-    val idParticipation: Long,
-    val isLastParticipation: Boolean
+data class Participations(
+    val idEvent: Long
 )
-
-@Serializable
-data class NewPerson(val idEvent: Long)
-
-@Serializable
-data object Participants

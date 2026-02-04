@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.archive
+package com.example.guetteteskilometres.ui.screens.archive.events
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder

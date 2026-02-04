@@ -1,4 +1,4 @@
-package com.example.guetteteskilometres.ui.screens.archive
+package com.example.guetteteskilometres.ui.screens.archive.events
 
 import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Event

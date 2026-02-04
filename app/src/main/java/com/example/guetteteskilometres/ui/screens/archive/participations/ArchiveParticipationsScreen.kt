@@ -1,10 +1,11 @@
-package com.example.guetteteskilometres.ui.screens.archive
+package com.example.guetteteskilometres.ui.screens.archive.participations
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,31 +35,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.guetteteskilometres.R
-import com.example.guetteteskilometres.data.model.Event
-import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
-import kotlinx.collections.immutable.persistentListOf
-import kotlin.math.roundToInt
+import com.example.guetteteskilometres.data.model.ArchiveParticipation
 
 @Composable
-fun ArchiveEventsScreen(
-    navigations: ArchiveEventsNavigations,
-    viewModel: ArchiveEventsViewModel
+fun ArchiveParticipationsScreen(
+    navigations: ArchiveParticipationsNavigations,
+    viewModel: ArchiveParticipationsViewModel,
+    idEvent: Long
 ) {
     val state by viewModel.state.collectAsState()
-
-    viewModel.initialize()
-
+    
+    viewModel.initialize(idEvent)
+    
     ScreenBody(
         state = state,
-        interactions = ArchiveEventsInteractions(
+        interactions = ArchiveParticipationsInteractions(
             onBackClicked = navigations.navigateUp,
-            onEventClicked = { event -> navigations.navigateToEvent(event) },
-            onFilterChanged = viewModel::updateFilter,
-            onExportClicked = viewModel::exportEvent,
-            onDismissClicked = viewModel::dismissDialog
+            onFilterChanged = viewModel::updateFilter
         )
     )
 }
@@ -67,8 +61,8 @@ fun ArchiveEventsScreen(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
-    state: ArchiveEventsState,
-    interactions: ArchiveEventsInteractions
+    state: ArchiveParticipationsState,
+    interactions: ArchiveParticipationsInteractions
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -89,7 +83,10 @@ private fun ScreenBody(
                                     .size(18.dp)
                             )
                             Text(
-                                text = stringResource(id = R.string.title_archive_events),
+                                text = stringResource(
+                                    id = R.string.title_participations,
+                                    state.event?.name.orEmpty()
+                                ),
                                 style = MaterialTheme.typography.titleLarge
                             )
                         }
@@ -106,7 +103,6 @@ private fun ScreenBody(
             }
         }
     ) { innerPadding ->
-        // TODO FCH : ajouter les dialog quand elles seront créées
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -119,6 +115,35 @@ private fun ScreenBody(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        ) {
+                            val totalKilometers =
+                                state.participations.sumOf { it.totalMeters } / 1000f
+                            if (state.filter.isEmpty()) {
+                                val nbPersons = state.participations.size
+                                Text(
+                                    text = pluralStringResource(
+                                        id = R.plurals.label_nb_participants,
+                                        count = nbPersons,
+                                        nbPersons
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = stringResource(
+                                    id = R.string.label_nb_kilometres_totaux,
+                                    totalKilometers.toString()
+                                ),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
                     OutlinedTextField(
                         value = state.filter,
                         onValueChange = interactions.onFilterChanged,
@@ -142,22 +167,16 @@ private fun ScreenBody(
                             .fillMaxWidth()
                             .padding(bottom = 16.dp)
                     )
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
                 }
             }
-            if (state.events.isNotEmpty()) {
-                items(state.events) { event ->
-                    event.ArchiveCompose(
-                        onEventClicked = interactions.onEventClicked,
-                        onExportClicked = interactions.onExportClicked
-                    )
+            if (state.participations.isNotEmpty()) {
+                items(state.participations) { participation ->
+                    participation.Compose()
                 }
             } else {
                 item {
                     Text(
-                        text = stringResource(id = R.string.label_no_archive_event),
+                        text = stringResource(id = R.string.label_no_participation),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -170,17 +189,9 @@ private fun ScreenBody(
 }
 
 @Composable
-private fun Event.ArchiveCompose(
-    onEventClicked: (Long) -> Unit,
-    onExportClicked: (Long) -> Unit
-) {
-    val event = this
-    val nbParticipants = nbParticipants
-    val kilometers = totalMeters?.div(1000f)
+private fun ArchiveParticipation.Compose() {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEventClicked(event.id) },
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -202,70 +213,15 @@ private fun Event.ArchiveCompose(
                     .weight(1f)
             ) {
                 Text(
-                    text = event.name,
+                    text = "${person.firstname} ${person.name?.uppercase() ?: ""}",
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
-                    text = pluralStringResource(
-                        R.plurals.text_nb_participants_nb_kilometres,
-                        nbParticipants ?: 0,
-                        nbParticipants ?: 0,
-                        kilometers?.roundToInt() ?: 0
-                    ),
+                    text = stringResource(id = R.string.text_nb_metres, totalMeters),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Icon(
-                imageVector = Icons.Default.IosShare,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(24.dp)
-                    .clickable { onExportClicked(event.id) }
-            )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ArchiveEventsPreview() {
-    GuetteTesKilometresTheme {
-        val events = persistentListOf(
-            Event(
-                id = 0,
-                name = "100 kilomètres",
-                startMeters = 100,
-                ascending = false,
-                active = false,
-                totalMeters = 100000,
-                nbParticipants = 28
-            ),
-            Event(
-                id = 1,
-                name = "24 heures",
-                startMeters = 0,
-                ascending = true,
-                active = false,
-                totalMeters = 311569,
-                nbParticipants = 44
-            )
-        )
-        ScreenBody(
-            state = ArchiveEventsState(
-                events = events,
-                dialog = Dialog.None,
-                filter = ""
-            ),
-            interactions = ArchiveEventsInteractions(
-                onBackClicked = { },
-                onEventClicked = { },
-                onFilterChanged = { },
-                onExportClicked = { },
-                onDismissClicked = { }
-            )
-        )
     }
 }
