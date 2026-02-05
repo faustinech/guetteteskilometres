@@ -4,7 +4,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.guetteteskilometres.data.repository.EventRepository
-import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.ui.navigation.Events
 
 fun NavGraphBuilder.events(

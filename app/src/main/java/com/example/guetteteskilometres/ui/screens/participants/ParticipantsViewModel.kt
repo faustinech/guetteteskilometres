@@ -117,7 +117,7 @@ class ParticipantsViewModel @Inject constructor(
             val person = idPerson?.let { personRepository.getPerson(it) }
             _state.update { state ->
                 state.copy(
-                    dialog = state.dialog?.copy(
+                    dialog = CreateOrEditParticipantDialogInfos(
                         idPerson = person?.id,
                         firstname = person?.firstname,
                         name = person?.name,

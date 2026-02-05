@@ -9,9 +9,6 @@ import kotlinx.coroutines.withContext
 class PersonRepository(
     private val storage: PersonStorage
 ) {
-    fun getPersons(idEvent: Long): Flow<List<Person>> {
-        return storage.getPersons(idEvent)
-    }
 
     suspend fun savePerson(id: Long?, firstname: String, name: String?, email: String?, active: Boolean?): Long? {
         return withContext(Dispatchers.IO) {

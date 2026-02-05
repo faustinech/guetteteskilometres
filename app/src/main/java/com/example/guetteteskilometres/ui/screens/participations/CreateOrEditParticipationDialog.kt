@@ -20,11 +20,8 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,7 +45,6 @@ import com.example.guetteteskilometres.ui.theme.darkGreen
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
 import com.example.guetteteskilometres.ui.theme.primaryRed
-import com.example.guetteteskilometres.ui.theme.white
 import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +90,6 @@ fun CreateOrEditParticipationDialog(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // TODO : voir pour le focus du champ participant
                     var expanded by remember { mutableStateOf(false) }
                     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
                     ExposedDropdownMenuBox(

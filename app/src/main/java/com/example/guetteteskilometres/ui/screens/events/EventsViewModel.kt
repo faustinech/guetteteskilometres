@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.enums.SaveAlert
 import com.example.guetteteskilometres.data.repository.EventRepository
-import com.example.guetteteskilometres.data.repository.ParticipationRepository
 import com.example.guetteteskilometres.ui.screens.BaseViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

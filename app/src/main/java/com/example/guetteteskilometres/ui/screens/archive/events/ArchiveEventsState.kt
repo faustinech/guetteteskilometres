@@ -11,5 +11,6 @@ data class ArchiveEventsState(
 
 sealed interface Dialog {
     data object None: Dialog
-    // TODO FCH : ajouter le message en cas d'échec/réussite de l'export des données
+    data object SuccessSave: Dialog
+    data object ErrorSave: Dialog
 }

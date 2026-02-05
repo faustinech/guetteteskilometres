@@ -272,7 +272,13 @@ class ParticipationsViewModel(
                     val endMeters = saisie.endMeters?.toIntOrNull()
                     val person = saisie.person
                     val event = _state.value.event
-                    val defaultStartMeters = allParticipations.firstOrNull { it.endMeters != null }?.endMeters ?: _state.value.event?.startMeters
+                    val lastParticipation = allParticipations.firstOrNull { it.endMeters != null }
+                    val beforeParticipation = allParticipations.firstOrNull { it.id != lastParticipation?.id }
+                    val isEdition = lastParticipation?.id == saisie.idParticipation
+                    val defaultStartMeters = when {
+                        isEdition -> beforeParticipation?.endMeters
+                        else -> lastParticipation?.endMeters
+                    } ?: _state.value.event?.startMeters
                     if (startMeters == null || person == null) {
                         _state.update { state ->
                             state.copy(

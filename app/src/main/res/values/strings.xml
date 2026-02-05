@@ -1,34 +1,7 @@
 <resources>
     <string name="app_name">Guette tes kilomètres</string>
     <string name="app_short_name">GTK</string>
-    <string name="label_no_event">Il n\'y a pas d\'évément pour l\'instant. Veuillez en ajouter un.</string>
 
-    <string name="title_new_event">Créer événement</string>
-    <string name="message_error_name_event">Veuillez saisir un nom valide</string>
-    <string name="message_error_firstname_missing">Le prénom est manquant</string>
-
-    <string name="title_new_participation">Nouvelle participation</string>
-    <string name="title_new_person">Nouveau participant</string>
-
-    <string name="message_valeur_incorrect">Valeur incorrecte</string>
-    <string name="message_error_missing_person">Veuillez choisir un participant</string>
-    <string name="message_error_missing_start_meters">Veuillez saisir les mètres de départ</string>
-
-    <string name="label_name_person">Participant</string>
-    <string name="text_nb_metres">%s m</string>
-    <string name="message_confirmation_suppression">Confirmez-vous la suppression de cette participation ?</string>
-
-     <string name="common_yes">Oui</string>
-    <string name="common_no">Non</string>
-    <string name="common_ok">OK</string>
-    <string name="message_confirmation_cloture">Confirmez-vous la clôture de cet événement ?</string>
-    <string name="title_confirmation">Confirmation</string>
-    <string name="message_confirmation_suppression_event">Confirmez-vous la suppression de l\'événement %s ?</string>
-    <string name="title_information">Information</string>
-    <string name="message_wrong_save">Une erreur est survenue lors de la sauvegarde.</string>
-    <string name="message_correct_save">Sauvegarde faite.</string>
-
-    <!-- STRINGS V2 -->
     <string name="title_home">Accueil</string>
     <string name="title_participants">Participants</string>
     <string name="title_events">Événements en cours</string>
@@ -80,6 +53,10 @@
         <item quantity="other">%s participants</item>
     </plurals>
     <string name="label_in_progress">En cours</string>
+    <string name="common_yes">Oui</string>
+    <string name="common_no">Non</string>
+    <string name="title_confirmation">Confirmation</string>
+    <string name="message_confirmation_suppression_event">Confirmez-vous la suppression de l\'événement %s ?</string>
 
     <string name="title_create_participation">Créer une participation</string>
     <string name="title_edit_participation">Modifier une participation</string>
@@ -87,4 +64,13 @@
     <string name="label_end_kilometres">Fin (mètres)</string>
     <string name="message_error_incoherent_field">Les champs ne sont pas cohérents.</string>
     <string name="label_no_archive_event">Il n\'existe pas d\'événement correspondant pour l\'instant.</string>
+    <string name="text_nb_metres">%s m</string>
+    <string name="label_name_person">Participant</string>
+    <string name="label_no_event">Il n\'y a pas d\'évément pour l\'instant. Veuillez en ajouter un.</string>
+
+    <string name="title_information">Information</string>
+    <string name="message_wrong_save">Une erreur est survenue lors de la sauvegarde</string>
+    <string name="message_correct_save">Sauvegarde faite</string>
+
+    <string name="common_ok">OK</string>
 </resources>

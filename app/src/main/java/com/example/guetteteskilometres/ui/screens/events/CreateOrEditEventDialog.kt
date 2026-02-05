@@ -33,7 +33,6 @@ import com.example.guetteteskilometres.ui.theme.darkGreen
 import com.example.guetteteskilometres.ui.theme.lightGreen
 import com.example.guetteteskilometres.ui.theme.lightRed
 import com.example.guetteteskilometres.ui.theme.primaryRed
-import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

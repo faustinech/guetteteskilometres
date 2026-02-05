@@ -1,6 +1,9 @@
 package com.example.guetteteskilometres.ui.screens.archive.events
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,12 +20,14 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,14 +40,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.example.guetteteskilometres.R
 import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
+import com.example.guetteteskilometres.ui.theme.darkGreen
+import com.example.guetteteskilometres.ui.theme.lightGreen
+import com.example.guetteteskilometres.ui.theme.lightRed
+import com.example.guetteteskilometres.ui.theme.primaryRed
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.math.roundToInt
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ArchiveEventsScreen(
     navigations: ArchiveEventsNavigations,
@@ -106,7 +118,95 @@ private fun ScreenBody(
             }
         }
     ) { innerPadding ->
-        // TODO FCH : ajouter les dialog quand elles seront créées
+        when (state.dialog) {
+            Dialog.ErrorSave -> {
+                BasicAlertDialog(
+                    onDismissRequest = interactions.onDismissClicked,
+                    modifier = Modifier,
+                    properties = DialogProperties(
+                        dismissOnClickOutside = true
+                    ),
+                    content = {
+                        Column(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.background,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.title_information),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = stringResource(R.string.message_wrong_save),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(lightRed, RoundedCornerShape(5.dp))
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = primaryRed
+                            )
+                            OutlinedButton(
+                                onClick = interactions.onDismissClicked,
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.common_ok)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+            Dialog.SuccessSave -> {
+                BasicAlertDialog(
+                    onDismissRequest = interactions.onDismissClicked,
+                    modifier = Modifier,
+                    properties = DialogProperties(
+                        dismissOnClickOutside = true
+                    ),
+                    content = {
+                        Column(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.background,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.title_information),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = stringResource(R.string.message_correct_save),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(lightGreen, RoundedCornerShape(5.dp))
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = darkGreen
+                            )
+                            OutlinedButton(
+                                onClick = interactions.onDismissClicked,
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.common_ok)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+            Dialog.None -> Unit
+        }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -216,15 +316,17 @@ private fun Event.ArchiveCompose(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Icon(
-                imageVector = Icons.Default.IosShare,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(24.dp)
-                    .clickable { onExportClicked(event.id) }
-            )
+            if (event.participations.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.IosShare,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .size(24.dp)
+                        .clickable { onExportClicked(event.id) }
+                )
+            }
         }
     }
 }
