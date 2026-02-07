@@ -163,7 +163,12 @@ class ParticipantsViewModel @Inject constructor(
                 }
                 idPerson?.let {
                     delay(600)
-                    _state.update { state -> state.copy(dialog = null) }
+                    _state.update { state ->
+                        state.copy(
+                            dialog = null,
+                            activeFilter = ParticipantFilter.All
+                        )
+                    }
                 }
             }
         }

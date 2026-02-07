@@ -182,7 +182,7 @@ class ParticipationsViewModel(
                             ?: allParticipations.firstOrNull()?.endMeters?.toString()
                             ?: _state.value.event?.startMeters.toString(),
                         endMeters = participation?.endMeters?.toString(),
-                        persons = personRepository.getAll().first().toImmutableList(),
+                        persons = personRepository.getAll().first().filter { it.active }.toImmutableList(),
                         alert = null,
                         createOrEditParticipantDialogInfos = null
                     )
@@ -289,6 +289,16 @@ class ParticipationsViewModel(
                                 } else state.dialog
                             )
                         }
+                    } else if (startMeters < 0 || (endMeters != null && endMeters < 0)) {
+                        _state.update { state ->
+                            state.copy(
+                                dialog = if (state.dialog is Dialog.Input) {
+                                    state.dialog.copy(
+                                        alert = SaveAlert.Incoherence
+                                    )
+                                } else state.dialog
+                            )
+                        }
                     } else if (
                         (event?.ascending == true && (startMeters > (endMeters ?: 0))) ||
                         (event?.ascending == false && (startMeters < (endMeters ?: 0))) ||
@@ -341,6 +351,12 @@ class ParticipationsViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun deleteParticipation(id: Long) {
+        viewModelScope.launch {
+            participationRepository.removeParticipation(id)
         }
     }
 

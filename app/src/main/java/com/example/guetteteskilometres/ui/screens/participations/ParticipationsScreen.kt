@@ -3,6 +3,7 @@ package com.example.guetteteskilometres.ui.screens.participations
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,6 +48,7 @@ import com.example.guetteteskilometres.data.model.Event
 import com.example.guetteteskilometres.data.model.Participation
 import com.example.guetteteskilometres.data.model.Person
 import com.example.guetteteskilometres.ui.theme.GuetteTesKilometresTheme
+import com.example.guetteteskilometres.ui.theme.secondaryRed
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -82,7 +85,8 @@ fun ParticipationsScreen(
             onPersonChanged = viewModel::updatePerson,
             onAddPersonClicked = viewModel::updateNewPersonDialog,
             onValidateClicked = viewModel::validate,
-            onFieldChanged = viewModel::updateField
+            onFieldChanged = viewModel::updateField,
+            onDeleteParticipation = viewModel::deleteParticipation
         )
     )
 
@@ -116,8 +120,8 @@ private fun ScreenBody(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .clickable { interactions.onBackClicked() }
-                                    .padding(2.dp)
                                     .size(18.dp)
+                                    .padding(2.dp)
                             )
                             Text(
                                 text = stringResource(
@@ -152,111 +156,123 @@ private fun ScreenBody(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
-            stickyHeader {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                        ) {
-                            val totalKilometers =
-                                state.participations.filter { it.endMeters != null }.sumOf {
-                                    abs(
-                                        it.startMeters - (it.endMeters ?: 0)
-                                    )
-                                } / 1000f
-                            if (state.filter.isEmpty()) {
-                                val nbPersons = state.participations.groupBy { it.person }.size
-                                Text(
-                                    text = pluralStringResource(
-                                        id = R.plurals.label_nb_participants,
-                                        count = nbPersons,
-                                        nbPersons
-                                    ),
-                                    style = MaterialTheme.typography.bodyMedium
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 16.dp)
+                    ) {
+                        val totalKilometers =
+                            state.participations.filter { it.endMeters != null }.sumOf {
+                                abs(
+                                    it.startMeters - (it.endMeters ?: 0)
                                 )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+                            } / 1000f
+                        if (state.filter.isEmpty()) {
+                            val nbPersons = state.participations.groupBy { it.person }.size
                             Text(
-                                text = stringResource(
-                                    id = R.string.label_nb_kilometres_totaux,
-                                    totalKilometers.toString()
+                                text = pluralStringResource(
+                                    id = R.plurals.label_nb_participants,
+                                    count = nbPersons,
+                                    nbPersons
                                 ),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = stringResource(
+                                id = R.string.label_nb_kilometres_totaux,
+                                totalKilometers.toString()
+                            ),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
-                    OutlinedTextField(
-                        value = state.filter,
-                        onValueChange = interactions.onFilterChanged,
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.label_filter),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        trailingIcon = {
+                }
+                OutlinedTextField(
+                    value = state.filter,
+                    onValueChange = interactions.onFilterChanged,
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.label_filter),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    trailingIcon = {
+                        if (state.filter.isNotEmpty()) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null,
                                 modifier = Modifier.clickable { interactions.onFilterChanged("") }
                             )
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                    )
-                }
+                        }
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
             }
-            if (state.participations.isNotEmpty()) {
-                // En cours
-                state.participations.firstOrNull { it.endMeters == null }?.let { enCours ->
-                    item {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            enCours.Compose(
-                                interactions,
-                                modifier = Modifier.padding(bottom = 15.dp)
-                            )
-                            HorizontalDivider(
-                                modifier = Modifier.padding(8.dp)
-                            )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (state.participations.isNotEmpty()) {
+                    // En cours
+                    state.participations.firstOrNull { it.endMeters == null }?.let { enCours ->
+                        item {
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                enCours.Compose(
+                                    interactions,
+                                    modifier = Modifier.padding(bottom = 15.dp)
+                                )
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    )
+                                )
+                            }
                         }
                     }
-                }
-                // Terminé
-                items(
-                    items = state.participations.filter { it.endMeters != null }
-                ) { participation ->
-                    participation.Compose(interactions)
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.label_no_participation),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
+                    // Terminé
+                    items(
+                        items = state.participations.filter { it.endMeters != null }
+                    ) { participation ->
+                        participation.Compose(interactions)
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.label_no_participation),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 5.dp)
+                        )
+                    }
                 }
             }
         }
+
         if (state.dialog is Dialog.Input) {
             CreateOrEditParticipationDialog(
                 onDismissClicked = interactions.onDismissDialogClicked,
@@ -318,6 +334,16 @@ fun Participation.Compose(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
+            if (endMeters == null) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = secondaryRed,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { interactions.onDeleteParticipation(id) }
+                )
+            }
         }
     }
 }
@@ -327,6 +353,55 @@ fun Participation.Compose(
 private fun HomePreview() {
     GuetteTesKilometresTheme {
         val participations = persistentListOf(
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
+            Participation(
+                id = 0,
+                person = Person(1, "Test", "Nom", null, true),
+                event = Event(1, "100", 0, true, false, 1234, 12),
+                startMeters = 0,
+                endMeters = 1000
+            ),
             Participation(
                 id = 0,
                 person = Person(1, "Test", "Nom", null, true),
@@ -371,7 +446,8 @@ private fun HomePreview() {
                 { },
                 { },
                 { },
-                { _, _ -> }
+                { _, _ -> },
+                { }
             )
         )
     }
@@ -411,7 +487,8 @@ private fun NoParticipationPreview() {
                 { },
                 { },
                 { },
-                { _, _ -> }
+                { _, _ -> },
+                { }
             )
         )
     }

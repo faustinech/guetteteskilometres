@@ -17,9 +17,11 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -91,43 +93,27 @@ fun CreateOrEditParticipationDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     var expanded by remember { mutableStateOf(false) }
-                    val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
                     ExposedDropdownMenuBox(
                         expanded = expanded,
-                        onExpandedChange = { expanded = !expanded },
+                        onExpandedChange = {
+                            if (state.persons.isNotEmpty()) {
+                                expanded = !expanded
+                            }
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         OutlinedTextField(
                             modifier = Modifier
-                                .menuAnchor()
-                                .clickable(
-                                    onClick = {
-                                        expanded = if (state.persons.isNotEmpty()) {
-                                            !expanded
-                                        } else {
-                                            false
-                                        }
-                                    }
-                                ),
+                                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
                             value = state.person?.let { "${it.firstname} ${it.name.orEmpty()}" }.orEmpty(),
                             onValueChange = { },
                             label = { Text(text = stringResource(id = R.string.label_name_person)) },
                             singleLine = true,
                             readOnly = true,
                             trailingIcon = {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = null,
-                                    modifier = Modifier.clickable(
-                                        onClick = {
-                                            expanded = if (state.persons.isNotEmpty()) {
-                                                !expanded
-                                            } else {
-                                                false
-                                            }
-                                        }
-                                    )
-                                )
+                                if (state.persons.isNotEmpty()) {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+                                }
                             },
                             shape = RoundedCornerShape(12.dp),
                             enabled = state.persons.isNotEmpty() || state.person != null

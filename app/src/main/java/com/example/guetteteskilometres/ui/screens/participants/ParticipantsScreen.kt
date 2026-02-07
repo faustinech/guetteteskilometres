@@ -95,8 +95,8 @@ private fun ScreenBody(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .clickable { interactions.onBackClicked() }
-                                    .padding(2.dp)
                                     .size(18.dp)
+                                    .padding(2.dp)
                             )
                             Text(
                                 text = stringResource(id = R.string.title_participants),
@@ -126,41 +126,55 @@ private fun ScreenBody(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            stickyHeader {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    FilterChips(
-                        selectedFilter = state.activeFilter,
-                        onFilterSelected = { chip -> interactions.onFilterSelected(chip) }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FilterChips(
+                    selectedFilter = state.activeFilter,
+                    onFilterSelected = { chip -> interactions.onFilterSelected(chip) }
+                )
+                ParticipantSearchBar(
+                    filter = state.filter,
+                    onFilterChanged = { filter -> interactions.onFilterChanged(filter) }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        bottom = 16.dp
                     )
-                    ParticipantSearchBar(
-                        filter = state.filter,
-                        onFilterChanged = { filter -> interactions.onFilterChanged(filter) }
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
+                )
             }
-            if (state.persons.isNotEmpty()) {
-                items(state.persons) { person ->
-                    PersonCard(person) { interactions.onPersonClicked(it) }
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(R.string.no_participant),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                if (state.persons.isNotEmpty()) {
+                    items(state.persons) { person ->
+                        PersonCard(person) { interactions.onPersonClicked(it) }
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(R.string.no_participant),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                        )
+                    }
                 }
             }
         }
@@ -193,11 +207,13 @@ private fun ParticipantSearchBar(
         },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
         trailingIcon = {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                modifier = Modifier.clickable { onFilterChanged("") }
-            )
+            if (filter.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    modifier = Modifier.clickable { onFilterChanged("") }
+                )
+            }
         },
         singleLine = true,
         shape = RoundedCornerShape(12.dp),

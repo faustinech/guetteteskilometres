@@ -17,5 +17,6 @@ data class ParticipationsInteractions(
     val onPersonChanged: (Person) -> Unit,
     val onAddPersonClicked: () -> Unit,
     val onValidateClicked: () -> Unit,
-    val onFieldChanged: (ParticipationField, String?) -> Unit
+    val onFieldChanged: (ParticipationField, String?) -> Unit,
+    val onDeleteParticipation: (Long) -> Unit
 )

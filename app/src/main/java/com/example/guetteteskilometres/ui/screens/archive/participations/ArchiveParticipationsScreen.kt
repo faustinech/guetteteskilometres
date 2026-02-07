@@ -1,6 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.archive.participations
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -79,8 +80,8 @@ private fun ScreenBody(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .clickable { interactions.onBackClicked() }
-                                    .padding(2.dp)
                                     .size(18.dp)
+                                    .padding(2.dp)
                             )
                             Text(
                                 text = stringResource(
@@ -103,85 +104,97 @@ private fun ScreenBody(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
-            stickyHeader {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                        ) {
-                            val totalKilometers =
-                                state.participations.sumOf { it.totalMeters } / 1000f
-                            if (state.filter.isEmpty()) {
-                                val nbPersons = state.participations.size
-                                Text(
-                                    text = pluralStringResource(
-                                        id = R.plurals.label_nb_participants,
-                                        count = nbPersons,
-                                        nbPersons
-                                    ),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (state.participations.isNotEmpty() || (state.participations.isEmpty() && state.filter.isNotEmpty())) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                    ) {
+                        val totalKilometers =
+                            state.participations.sumOf { it.totalMeters } / 1000f
+                        if (state.filter.isEmpty()) {
+                            val nbPersons = state.participations.size
                             Text(
-                                text = stringResource(
-                                    id = R.string.label_nb_kilometres_totaux,
-                                    totalKilometers.toString()
+                                text = pluralStringResource(
+                                    id = R.plurals.label_nb_participants,
+                                    count = nbPersons,
+                                    nbPersons
                                 ),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = stringResource(
+                                id = R.string.label_nb_kilometres_totaux,
+                                totalKilometers.toString()
+                            ),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
-                    OutlinedTextField(
-                        value = state.filter,
-                        onValueChange = interactions.onFilterChanged,
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.label_filter),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        trailingIcon = {
+                }
+                OutlinedTextField(
+                    value = state.filter,
+                    onValueChange = interactions.onFilterChanged,
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.label_filter),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    trailingIcon = {
+                        if (state.filter.isNotEmpty()) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null,
                                 modifier = Modifier.clickable { interactions.onFilterChanged("") }
                             )
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                    )
-                }
+                        }
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
             }
-            if (state.participations.isNotEmpty()) {
-                items(state.participations) { participation ->
-                    participation.Compose()
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.label_no_participation),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (state.participations.isNotEmpty()) {
+                    items(state.participations) { participation ->
+                        participation.Compose()
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.label_no_participation),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 5.dp)
+                        )
+                    }
                 }
             }
         }

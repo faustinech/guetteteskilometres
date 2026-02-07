@@ -1,6 +1,7 @@
 package com.example.guetteteskilometres.ui.screens.events
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -98,8 +99,8 @@ private fun ScreenBody(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .clickable { interactions.onBackClicked() }
-                                    .padding(2.dp)
                                     .size(18.dp)
+                                    .padding(2.dp)
                             )
                             Text(
                                 text = stringResource(id = R.string.title_events),
@@ -177,63 +178,78 @@ private fun ScreenBody(
             }
             Dialog.None -> { }
         }
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
-            stickyHeader {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    OutlinedTextField(
-                        value = state.filter,
-                        onValueChange = interactions.onFilterChanged,
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.label_filter),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        trailingIcon = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(
+                    value = state.filter,
+                    onValueChange = interactions.onFilterChanged,
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.label_filter),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    trailingIcon = {
+                        if (state.filter.isNotEmpty()) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null,
                                 modifier = Modifier.clickable { interactions.onFilterChanged("") }
                             )
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
+                        }
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        bottom = 16.dp
                     )
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
+                )
             }
-            if (state.events.isNotEmpty()) {
-                items(state.events) { event ->
-                    event.Compose(
-                        onEventClicked = interactions.onEventClicked,
-                        onDeleteEventClicked = interactions.onDeleteEventClicked,
-                        onEditEventClicked = interactions.onEditEventClicked
-                    )
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.label_no_event),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (state.events.isNotEmpty()) {
+                    items(state.events) { event ->
+                        event.Compose(
+                            onEventClicked = interactions.onEventClicked,
+                            onDeleteEventClicked = interactions.onDeleteEventClicked,
+                            onEditEventClicked = interactions.onEditEventClicked
+                        )
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.label_no_event),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 5.dp)
+                        )
+                    }
                 }
             }
         }
@@ -338,7 +354,7 @@ private fun EventsPreview() {
                 events = events,
                 dialog = Dialog.None,
                 idEventToDelete = null,
-                filter = ""
+                filter = "Test"
             ),
             interactions = EventsInteractions(
                 { },
