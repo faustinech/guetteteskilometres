@@ -166,7 +166,7 @@ class EventsViewModel @Inject constructor(
                 val startMeters = dialog.startMeters
                 val active = dialog.active
                 val ascending = dialog.ascending
-                if (name.isNullOrEmpty() || startMeters.isNullOrEmpty()) {
+                if (name.isNullOrEmpty() || (ascending != true && startMeters.isNullOrEmpty())) {
                     _state.update { state ->
                         state.copy(
                             dialog = if (state.dialog is Dialog.Input) {
@@ -180,7 +180,7 @@ class EventsViewModel @Inject constructor(
                     val idEvent = eventRepository.saveEvent(
                         id = id,
                         name = name,
-                        startMeters = startMeters,
+                        startMeters = if (ascending != true) startMeters.orEmpty() else "0",
                         ascending = ascending,
                         active = active
                     )

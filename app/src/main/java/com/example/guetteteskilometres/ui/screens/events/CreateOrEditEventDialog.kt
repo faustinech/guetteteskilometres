@@ -96,31 +96,6 @@ fun CreateOrEditEventDialog(
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
                 if (!state.alreadyStart) {
-                    OutlinedTextField(
-                        value = state.startMeters.orEmpty(),
-                        onValueChange = { onFieldChanged(EventField.StartMeters, it) },
-                        placeholder = {
-                            Text(
-                                text = "${stringResource(R.string.label_start_meters)} *",
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        trailingIcon = {
-                            if (!state.startMeters.isNullOrEmpty()) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = null,
-                                    modifier = Modifier.clickable {
-                                        onFieldChanged(EventField.StartMeters, null)
-                                    }
-                                )
-                            }
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                        textStyle = MaterialTheme.typography.bodyMedium
-                    )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -139,24 +114,53 @@ fun CreateOrEditEventDialog(
                             text = stringResource(R.string.label_ascending)
                         )
                     }
+                    if (state.ascending != true) {
+                        OutlinedTextField(
+                            value = state.startMeters.orEmpty(),
+                            onValueChange = { onFieldChanged(EventField.StartMeters, it) },
+                            placeholder = {
+                                Text(
+                                    text = "${stringResource(R.string.label_start_meters)} *",
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            },
+                            trailingIcon = {
+                                if (!state.startMeters.isNullOrEmpty()) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            onFieldChanged(EventField.StartMeters, null)
+                                        }
+                                    )
+                                }
+                            },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.label_archiver),
-                        textAlign = TextAlign.End
-                    )
-                    Switch(
-                        checked = state.active ?: true,
-                        onCheckedChange = onActiveChanged,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.label_active)
-                    )
+                if (state.idEvent != null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.label_archiver),
+                            textAlign = TextAlign.End
+                        )
+                        Switch(
+                            checked = state.active ?: true,
+                            onCheckedChange = onActiveChanged,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.label_active)
+                        )
+                    }
                 }
                 state.alert?.let {
                     when (it) {
